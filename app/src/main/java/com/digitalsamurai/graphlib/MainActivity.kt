@@ -49,12 +49,24 @@ class MainActivity : AppCompatActivity(), CreateInterface {
         Log.d("TAG", list.size.toString())
 
 
-        val html = Html.fromHtml("<b>BRRRRRRRRRRRRRRRR</b><br>RRRRRRRRRRRRRR<br><img src='a'/>",ImageGetter(this.applicationContext),null)
+//        val html = Html.fromHtml("<b>BRRRRRRRRRRRRRRRR</b><br>RRRRRRRRRRRRRR<br><img src='a'/>",ImageGetter(this.applicationContext),null)
 
-        binding.editTextTextPersonName.setText(html)
-        binding.editTextTextPersonName.isClickable = true
-        binding.editTextTextPersonName.isFocusable = true
-        binding.editTextTextPersonName.isEnabled = true
+//        binding.editTextTextPersonName.setText(html)
+//        binding.editTextTextPersonName.isClickable = true
+//        binding.editTextTextPersonName.isFocusable = true
+//        binding.editTextTextPersonName.isEnabled = true
+
+
+
+
+        binding.checkBoxMatrix.setOnClickListener {
+            l.view.isMatrixEnabled = binding.checkBoxMatrix.isChecked
+        }
+
+
+
+
+
         binding.floatingActionButton.setOnClickListener {
             val d = DialogAddNode(this as CreateInterface)
             d.show(supportFragmentManager,"FAK")
@@ -77,8 +89,8 @@ class MainActivity : AppCompatActivity(), CreateInterface {
     }
 
     override fun created(x: Int, y: Int, text: String, parent: TreeNode<ViewNode>) {
-        val node = parent.addNode(ViewNode(this,Point(x,y)).also { it.text = text })
-        l.addNode(node)
+        val p = l.addNode(ViewNode(this,Point(x,y)).also { it.text = text },parent)
+        currentNodesList.add(p)
 //        l.view.invalidate()
     }
 

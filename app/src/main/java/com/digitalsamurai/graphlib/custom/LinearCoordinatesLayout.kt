@@ -2,12 +2,10 @@ package com.digitalsamurai.graphlib.custom
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Point
+import android.graphics.*
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsetsAnimation.Bounds
 import com.digitalsamurai.graphlib.math.tree.TreeNode
 import java.lang.NullPointerException
 import kotlin.math.abs
@@ -32,14 +30,36 @@ class LinearCoordinatesLayout(context : Context, private var treeView: TreeView)
     private var mPositions: HashMap<Int, CoordinatesPosition> = HashMap()
 
 
+    //красота для координатной сетки
+    private var colorMatrix = Color.parseColor("#000000")
+    private var strokeWithMatrix = 1f
+    private var textSizeMatrix = 30f
+    private var paintMatrix = Paint().also {
+        it.color = colorMatrix
+        it.strokeWidth = strokeWithMatrix
+        it.textSize = textSizeMatrix
+    }
+
+    //сопутствующие дополнительные данные для координатной сетки
+    private var stepLineMatrix : Float = 250f
+
+    //отображение координатной сетки
+    var isMatrixEnabled : Boolean = false
+    set(value) {
+        field = value
+        requestLayout()
+    }
+
+
 
     fun setOrigin(origin: Origin) {
         currentOrigin = origin
         if (this.isInLayout) {
-            requestLayout()
+            invalidate()
         }
 
     }
+
 
 
 
@@ -72,10 +92,10 @@ class LinearCoordinatesLayout(context : Context, private var treeView: TreeView)
                 xOrigin = width / 2
                 yOrigin = height / 2
             }
-            Origin.ORIGIN_COORDINATES -> {
-                xOrigin = 0
-                yOrigin = 0
-            }
+//            Origin.ORIGIN_COORDINATES -> {
+//                xOrigin = 0
+//                yOrigin = 0
+//            }
         }
 
         repeat(childCount) {
@@ -105,6 +125,8 @@ class LinearCoordinatesLayout(context : Context, private var treeView: TreeView)
 
 
         canvas?.let {
+            drawMatrix(it)
+
             drawConnectionRecyrcively(it,treeView.rootNode)
         }
         canvas?.drawCircle(xOrigin.toFloat(),yOrigin.toFloat(),10f, Paint().also{
@@ -113,8 +135,62 @@ class LinearCoordinatesLayout(context : Context, private var treeView: TreeView)
         super.dispatchDraw(canvas)
     }
 
+    private fun drawMatrix(canvas: Canvas){
+        if (isMatrixEnabled){
+            when(currentOrigin){
+                Origin.CENTER_VIEW -> {
 
-    fun drawConnectionRecyrcively(canvas : Canvas, node: TreeNode<ViewNode>){
+                    var abscissaStep = xOrigin.toFloat()
+                    var bound = Rect()
+                    paintMatrix.getTextBounds("0",0,1,bound)
+
+                    //Vertical lines
+                    canvas.drawLine(abscissaStep,0f,abscissaStep,this.height.toFloat(),paintMatrix)
+                    canvas.drawText("0",abscissaStep+10,bound.height().toFloat()+10,paintMatrix)
+
+                    while (abscissaStep+stepLineMatrix<this.width){
+                        abscissaStep+= stepLineMatrix
+                        canvas.drawLine(abscissaStep,0f,abscissaStep,this.height.toFloat(),paintMatrix)
+                        canvas.drawText((abscissaStep-xOrigin).toString(),abscissaStep+10,bound.height().toFloat()+10,paintMatrix)
+                    }
+
+                    abscissaStep = xOrigin.toFloat()
+                    while (abscissaStep-stepLineMatrix>0){
+                        abscissaStep-= stepLineMatrix
+                        canvas.drawLine(abscissaStep,0f,abscissaStep,this.height.toFloat(),paintMatrix)
+                        canvas.drawText((abscissaStep-xOrigin).toString(),abscissaStep+10,bound.height().toFloat()+10,paintMatrix)
+
+                    }
+
+
+                    //Horizontal lines
+                    var ordinateStep = yOrigin.toFloat()
+                    canvas.drawLine(0f,ordinateStep,this.width.toFloat(),ordinateStep,paintMatrix)
+                    canvas.drawText("0",10f,ordinateStep-10,paintMatrix)
+                    while (ordinateStep+stepLineMatrix<this.height){
+                        ordinateStep+= stepLineMatrix
+                        canvas.drawLine(0f,ordinateStep,this.width.toFloat(),ordinateStep,paintMatrix)
+                        canvas.drawText(((ordinateStep-yOrigin)*-1).toString(),10f,ordinateStep-10,paintMatrix)
+                    }
+                    ordinateStep = yOrigin.toFloat()
+                    while (ordinateStep-stepLineMatrix>0){
+                        ordinateStep-= stepLineMatrix
+                        canvas.drawLine(0f,ordinateStep,this.width.toFloat(),ordinateStep,paintMatrix)
+                        canvas.drawText(((ordinateStep-yOrigin)*-1).toString(),10f,ordinateStep-10,paintMatrix)
+                    }
+
+                }
+            }
+        }
+    }
+
+    /**
+     * рекурсивно отображаем линии взаимосвязей между узлами дерева
+     * @param node - нода, дети которых будут отрисовываться
+     * @param canvas - канва для отрисовки
+     * @return Ничего не возвращает
+     * */
+    private fun drawConnectionRecyrcively(canvas : Canvas, node: TreeNode<ViewNode>){
         node.childNodes.forEach {
 
             val absolutePointRoot = getAbsoluteCenter(node.data.viewPosition)
@@ -170,6 +246,7 @@ class LinearCoordinatesLayout(context : Context, private var treeView: TreeView)
         fun addViewInLayout(){
             if (view!=null){
                 this@LinearCoordinatesLayout.addView(this.view)
+                requestLayout()
 //                if (this@LinearCoordinatesLayout.isInLayout){
 //                    this@LinearCoordinatesLayout.requestLayout()
 //                }
@@ -196,7 +273,8 @@ class LinearCoordinatesLayout(context : Context, private var treeView: TreeView)
         }
     }
     enum class Origin{
-        CENTER_VIEW, ORIGIN_COORDINATES
+        CENTER_VIEW,
+//        ORIGIN_COORDINATES
     }
 
 
