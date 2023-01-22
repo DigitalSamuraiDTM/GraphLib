@@ -14,5 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "GraphLib"
 include ':app'
-include ':app:lib'
-include ':math'
+include ':graph'
+include ':database'

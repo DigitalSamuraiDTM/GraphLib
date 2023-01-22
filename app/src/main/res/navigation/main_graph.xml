@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/libsFragment">
+
+    <fragment
+        tools:layout="@layout/fragment_libs"
+        android:id="@+id/libsFragment"
+        android:name="com.digitalsamurai.graphlib.ui.libs.LibsFragment"
+        android:label="LibsFragment" >
+        <action
+            android:id="@+id/action_libsFragment_to_libCreatingDialog"
+            app:destination="@id/libCreatingDialog" />
+        <action
+            android:id="@+id/action_libsFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <dialog
+        tools:layout="@layout/dialog_createlib"
+        android:id="@+id/libCreatingDialog"
+        android:name="com.digitalsamurai.graphlib.ui.createlib.LibCreatingDialog"
+        android:label="LibCreatingDialog" />
+    <fragment
+        tools:layout="@layout/fragment_main"
+        android:id="@+id/mainFragment"
+        android:name="com.digitalsamurai.graphlib.ui.main.MainFragment"
+        android:label="MainFragment" />
+</navigation>

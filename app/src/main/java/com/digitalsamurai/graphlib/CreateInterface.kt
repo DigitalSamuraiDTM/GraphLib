@@ -1,7 +1,8 @@
 package com.digitalsamurai.graphlib
 
-import com.digitalsamurai.graphlib.custom.ViewNode
-import com.digitalsamurai.graphlib.math.tree.TreeNode
+import com.digitalsamurai.tree.TreeNode
+import com.digitalsamurai.view.ViewNode
+
 
 interface CreateInterface {
     fun created(x: Int,y : Int,text : String, parent : TreeNode<ViewNode>)
