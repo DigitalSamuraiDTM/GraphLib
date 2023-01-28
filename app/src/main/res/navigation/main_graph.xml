@@ -15,7 +15,8 @@
             app:destination="@id/libCreatingDialog" />
         <action
             android:id="@+id/action_libsFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <dialog
         tools:layout="@layout/dialog_createlib"

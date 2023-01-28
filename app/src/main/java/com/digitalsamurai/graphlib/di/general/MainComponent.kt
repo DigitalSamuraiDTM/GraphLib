@@ -9,5 +9,5 @@ import dagger.Subcomponent
 interface MainComponent {
 
 
-    fun injectMainFragment(fragment : MainFragment)
+    fun injectMainFragment(arg0 : MainFragment)
 }

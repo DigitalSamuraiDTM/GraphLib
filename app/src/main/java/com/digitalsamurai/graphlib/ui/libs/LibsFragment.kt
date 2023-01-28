@@ -34,7 +34,8 @@ class LibsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        GraphLibApp.appComponent.injectLibsFragment(this)
 
         binding = FragmentLibsBinding.inflate(inflater,container,false)
 
@@ -52,7 +53,6 @@ class LibsFragment : Fragment() {
         binding.libsRecyclerData.adapter = adapter
 
 
-        GraphLibApp.appComponent.injectLibsFragment(this)
         viewModel.initLibsViewModel()
 
 
