@@ -3,27 +3,22 @@ package com.digitalsamurai.graphlib.ui.libs
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.room.libs.Lib
-import com.digitalsamurai.graphlib.theme.ComposeMainTheme
+import com.digitalsamurai.graphlib.theme.MainTheme
 import com.digitalsamurai.graphlib.ui.libs.item.LibraryItem
 import java.time.LocalDateTime
 
 @Composable
 fun libsScreen(){
-    ComposeMainTheme() {
+    MainTheme() {
 //        val viewModel = GraphLibApp.appComponent.getLibsViewModel()
 //        val flow = viewModel.libsFlow.collectAsState(emptyList())
 //

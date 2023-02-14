@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.digitalsamurai.graphlib.custom.*
 import com.digitalsamurai.graphlib.databinding.ActivityMainBinding
+import com.digitalsamurai.graphlib.ui.navigation.Navigation
 import com.digitalsamurai.tree.TreeNode
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
@@ -36,14 +37,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            Navigation()
         }
-    }
-}
-@Preview
-@Composable
-fun libraries(){
-    Surface() {
-        
     }
 }
