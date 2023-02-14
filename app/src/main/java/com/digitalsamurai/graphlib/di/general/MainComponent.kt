@@ -10,4 +10,6 @@ interface MainComponent {
 
 
     fun injectMainFragment(arg0 : MainFragment)
+
+
 }

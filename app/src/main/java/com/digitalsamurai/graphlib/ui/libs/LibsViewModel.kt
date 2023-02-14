@@ -1,5 +1,8 @@
 package com.digitalsamurai.graphlib.ui.libs
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
@@ -46,5 +49,9 @@ class LibsViewModel @Inject constructor(private val database : GraphDatabase) : 
         CoroutineScope(Dispatchers.Main).launch {
             database.libDao().insertLib(Lib(name, LocalDateTime.now()))
         }
+    }
+
+    fun getAll(){
+
     }
 }
