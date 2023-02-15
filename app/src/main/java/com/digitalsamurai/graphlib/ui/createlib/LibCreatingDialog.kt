@@ -21,7 +21,6 @@ class LibCreatingDialog : DialogFragment() {
     lateinit var viewModel : LibsViewModel
 
     init {
-        GraphLibApp.appComponent.injectLibsFragment(this)
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {

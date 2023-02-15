@@ -20,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.digitalsamurai.graphlib.ui.navigation.Screen
+import com.digitalsamurai.graphlib.ui.start.event.StartClickEvents
 import com.digitalsamurai.graphlib.ui.start.states.StartScreenState
 import com.digitalsamurai.graphlib.ui.start.vm.StartScreenViewModel
 
@@ -30,36 +31,40 @@ fun StartScreen(navController: NavController){
     val state = viewModel.state.value
     val c = LocalContext.current
 
+    val startBtnNavigationRoute =
+        if (state.lastGraph==null){
+        Screen.Libs.route
+    } else{
+        Screen.Main.route+"/${state.lastGraph}"
+    }
+
     Column(verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)){
+        //*
         Text(text = "Hello in GraphLib",
             modifier = Modifier
                 .background(color = Color.White)
                 .padding(4.dp),
             fontSize = 30.sp,
             textAlign = TextAlign.Center)
+        //*
         Spacer(modifier = Modifier.height(60.dp))
+        //*
         Button(
             modifier = Modifier.background(Color.White),
             enabled = true,
-            onClick = {
-                if (state.lastGraph!=null){
-                    navController.navigate(Screen.Main.route+"/${state.lastGraph}")
-                } else{
-                    Toast.makeText(c,"FAK",Toast.LENGTH_LONG).show()
-                }
-            }){
+            onClick = { navController.navigate(startBtnNavigationRoute) }
+        ){
             val text = if (state.lastGraph==null){"Create new"} else{"In ${state.lastGraph}"}
             Text(text = text,
                 fontWeight = FontWeight.Bold)
         }
-
+        //*
         if (state.lastGraph!=null) {
-            Button(onClick = {
-            }) {
+            Button(onClick = { navController.navigate(Screen.Libs.route) } ) {
                 Text(text = "Select other or create new")
             }
         }

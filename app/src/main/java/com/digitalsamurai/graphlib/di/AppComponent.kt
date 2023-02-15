@@ -7,6 +7,7 @@ import com.digitalsamurai.graphlib.di.general.MainComponent
 import com.digitalsamurai.graphlib.ui.createlib.LibCreatingDialog
 import com.digitalsamurai.graphlib.ui.libs.LibsFragment
 import com.digitalsamurai.graphlib.ui.libs.LibsViewModel
+import com.digitalsamurai.graphlib.ui.start.vm.StartScreenViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -14,14 +15,7 @@ import javax.inject.Singleton
 @Component(modules = [AppModule::class, DatabaseModule::class])
 interface AppComponent {
 
-    //subcomponents of application hierarchy
-    fun graphComponent(graphModule : GraphModule) : GraphComponent
-
     //subcomponent
     fun mainComponent() : MainComponent
 
-    //injections
-    fun injectLibsFragment(fragment : LibsFragment)
-    fun injectLibsFragment(fragment : LibCreatingDialog)
-    fun getLibsViewModel() : LibsViewModel
 }

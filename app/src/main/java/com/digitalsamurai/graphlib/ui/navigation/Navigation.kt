@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.digitalsamurai.graphlib.ui.libs.LibsScreen
 import com.digitalsamurai.graphlib.ui.main.MainScreen
 import com.digitalsamurai.graphlib.ui.start.StartScreen
 
@@ -24,6 +25,9 @@ fun Navigation(){
             }
         )){entry->
             MainScreen(navController = navController, libName =  entry.arguments?.getString("lib_name"))
+        }
+        composable(route = Screen.Libs.route){
+            LibsScreen(navController)
         }
     }
 }

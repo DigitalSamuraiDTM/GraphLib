@@ -30,7 +30,6 @@ class LibsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        GraphLibApp.appComponent.injectLibsFragment(this)
 
         binding = FragmentLibsBinding.inflate(inflater,container,false)
 
