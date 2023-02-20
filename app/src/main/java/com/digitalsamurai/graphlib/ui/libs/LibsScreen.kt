@@ -33,72 +33,89 @@ import java.time.LocalDateTime
 fun LibsScreen(navController: NavController){
         val viewModel : LibsScreenViewModel = viewModel()
 
-        val libsState = viewModel.libsState.collectAsState().value
-//        val libsState = emptyList<Lib>()
+        val libsState = viewModel.libsState.collectAsState(emptyList()).value
+
+        LibsScreenContent(navController = navController, libsState = libsState)
 
 
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-        ) {
 
-            Box() {
-                //*
+}
 
-                //*
-                Column(modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center) {
-                    TopAppBar(
-                        modifier = Modifier
-                            .shadow(20.dp, RectangleShape,
-                                ambientColor = Color.White,
-                                spotColor = Color.Black)
+@Composable
+private fun LibsScreenContent(navController: NavController,
+                    libsState : List<Lib>){
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
 
-                    ) {}
+        Box(Modifier.fillMaxSize()) {
+            //*
 
-                    if (libsState.isEmpty()){
-                        //Show empty
-                        Box(modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center) {
-                            Text(
-                                text = "Empty! But it is not a problem",
-                                textAlign = TextAlign.Center)
-
-                        }
-                    } else {
-                        //show data
-                        LazyColumn(
-                            modifier = Modifier
-                                .weight(weight = 1f, fill = false),
-                            contentPadding = PaddingValues(5.dp)
-                        ) {
-                            items(libsState) {
-                                LibraryItem(lib = it, modifier = Modifier.clickable {
-                                    navController.navigate(Screen.Main.route+"/"+it.libName)
-                                })
-                            }
-                        }
-                    }
-                }
-                //*
-                FloatingActionButton(
-                    onClick = { navController.navigate(Screen.CreateNew.route) },
+            //*
+            Column(
+                modifier = Modifier,
+                verticalArrangement = Arrangement.Center
+            ) {
+                TopAppBar(
                     modifier = Modifier
-                        .padding(0.dp, 0.dp, 20.dp, 20.dp)
-                        .width(60.dp)
-                        .height(60.dp)
-                        .align(Alignment.BottomEnd)
+                        .shadow(
+                            5.dp, RectangleShape,
+                            ambientColor = Color.White,
+                            spotColor = Color.Black
+                        )
 
                 ) {}
 
-            }
-        }
+                if (libsState.isEmpty()) {
+                    //Show empty
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Empty! But it is not a problem",
+                            textAlign = TextAlign.Center
+                        )
 
+                    }
+                } else {
+                    //show data
+                    LazyColumn(
+                        modifier = Modifier,
+                        contentPadding = PaddingValues(5.dp)
+                    ) {
+                        items(libsState) {
+                            LibraryItem(
+                                lib = it,
+                                modifier = Modifier.clickable(enabled = true) {
+                                    navController.navigate(Screen.Main.route + "/" + it.libName){
+                                        this.popUpTo(0)
+                                    }
+                                })
+                        }
+                    }
+                }
+            }
+            //*
+            FloatingActionButton(
+                onClick = { navController.navigate(Screen.CreateNew.route) },
+                modifier = Modifier
+                    .padding(0.dp, 0.dp, 20.dp, 20.dp)
+                    .width(60.dp)
+                    .height(60.dp)
+                    .align(Alignment.BottomEnd)
+
+            ) {}
+
+        }
+    }
 }
 
 @Composable
 @Preview
 fun previewLibsScreen(){
-    LibsScreen(rememberNavController())
+//    LibsScreenContent(rememberNavController(), listOf(Lib("Test", LocalDateTime.now())))
+    LibsScreenContent(rememberNavController(), emptyList())
 }

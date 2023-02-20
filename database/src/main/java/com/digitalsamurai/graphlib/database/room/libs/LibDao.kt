@@ -16,7 +16,7 @@ interface LibDao {
     suspend fun findLibByName(name : String) : List<Lib>
 
     @Query("SELECT COUNT() FROM ${Lib.TABLE_NAME}")
-    suspend fun getCountLibs() : Int
+    suspend fun countLibs() : Int
 
     @Query("SELECT * FROM ${Lib.TABLE_NAME}")
     fun observeAll() : Flow<List<Lib>>

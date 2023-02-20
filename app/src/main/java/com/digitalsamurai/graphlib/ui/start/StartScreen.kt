@@ -29,7 +29,6 @@ fun StartScreen(navController: NavController){
         //init viewModel
     val viewModel : StartScreenViewModel = viewModel()
     val state = viewModel.state.value
-    val c = LocalContext.current
 
     val startBtnNavigationRoute =
         if (state.lastGraph==null){
@@ -58,14 +57,14 @@ fun StartScreen(navController: NavController){
             enabled = true,
             onClick = { navController.navigate(startBtnNavigationRoute) }
         ){
-            val text = if (state.lastGraph==null){"Create new"} else{"In ${state.lastGraph}"}
+            val text = if (state.lastGraph==null){"Begin"} else{"In ${state.lastGraph}"}
             Text(text = text,
                 fontWeight = FontWeight.Bold)
         }
         //*
         if (state.lastGraph!=null) {
             Button(onClick = { navController.navigate(Screen.Libs.route) } ) {
-                Text(text = "Select other or create new")
+                Text(text = "Graph list")
             }
         }
     }

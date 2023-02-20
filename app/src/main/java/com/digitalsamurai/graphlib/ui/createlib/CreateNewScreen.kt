@@ -53,9 +53,6 @@ fun CreateNewScreen(navController: NavController){
                     }
                 }
             })
-            rememberCoroutineScope().launch {
-
-            }
 
 
 
