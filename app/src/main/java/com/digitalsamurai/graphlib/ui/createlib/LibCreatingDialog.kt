@@ -8,7 +8,6 @@ import androidx.fragment.app.DialogFragment
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.databinding.DialogCreatelibBinding
-import com.digitalsamurai.graphlib.ui.libs.LibsViewModel
 import javax.inject.Inject
 
 class LibCreatingDialog : DialogFragment() {
@@ -17,8 +16,7 @@ class LibCreatingDialog : DialogFragment() {
     @Inject
     lateinit var database: GraphDatabase
 
-    @Inject
-    lateinit var viewModel : LibsViewModel
+
 
     init {
     }
@@ -32,14 +30,7 @@ class LibCreatingDialog : DialogFragment() {
 
 
 
-            binding.createlibBtnCreate.setOnClickListener {
-                if (binding.createlibEditLibname.text.isNotBlank()){
 
-                    viewModel.insertLib(binding.createlibEditLibname.text.toString())
-                    this@LibCreatingDialog.dismiss()
-
-                }
-            }
 
             builder.create()
         } ?: throw IllegalStateException("FAK")

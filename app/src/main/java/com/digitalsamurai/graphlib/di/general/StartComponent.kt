@@ -2,6 +2,7 @@ package com.digitalsamurai.graphlib.di.general
 
 import com.digitalsamurai.di.GraphComponent
 import com.digitalsamurai.di.GraphModule
+import com.digitalsamurai.graphlib.ui.createlib.vm.CreateLibViewModel
 import com.digitalsamurai.graphlib.ui.main.MainFragment
 import com.digitalsamurai.graphlib.ui.start.vm.StartScreenViewModel
 import dagger.Subcomponent
@@ -9,7 +10,7 @@ import dagger.Subcomponent
 
 @MainScope
 @Subcomponent(modules = [MainModule::class])
-interface MainComponent {
+interface StartComponent {
 
 
     //subcomponents of application hierarchy
@@ -18,6 +19,8 @@ interface MainComponent {
     fun injectStartViewModel(viewModel : StartScreenViewModel)
 
     fun injectMainFragment(arg0 : MainFragment)
+
+    fun injectCreateLibViewModel(viewModel : CreateLibViewModel)
 
 
 }

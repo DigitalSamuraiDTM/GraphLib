@@ -1,6 +1,5 @@
 package com.digitalsamurai.graphlib.ui.start.vm
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -24,12 +23,14 @@ class StartScreenViewModel : ViewModel() {
         return _state
     }
     init{
-        GraphLibApp.mainComponent.injectStartViewModel(this)
+        GraphLibApp.startComponent.injectStartViewModel(this)
     }
 
     fun clickEvent(event : StartClickEvents){
         when(event){
-            StartClickEvents.NEW_OR_OTHER -> TODO()
+            StartClickEvents.NEW_OR_OTHER -> {
+                //can handle click event
+            }
         }
     }
 

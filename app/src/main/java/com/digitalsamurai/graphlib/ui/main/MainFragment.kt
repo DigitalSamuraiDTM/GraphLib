@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.databinding.FragmentMainBinding
-import com.digitalsamurai.graphlib.ui.libs.LibsViewModel
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -26,7 +25,7 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater,container,false)
 
 
-        GraphLibApp.mainComponent.injectMainFragment(this)
+        GraphLibApp.startComponent.injectMainFragment(this)
 
 
         val libName = arguments?.getString(BUNDLE_LIB_NAME)

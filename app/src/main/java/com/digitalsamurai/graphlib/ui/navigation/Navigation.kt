@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.digitalsamurai.graphlib.ui.createlib.CreateNewScreen
 import com.digitalsamurai.graphlib.ui.libs.LibsScreen
 import com.digitalsamurai.graphlib.ui.main.MainScreen
 import com.digitalsamurai.graphlib.ui.start.StartScreen
@@ -17,11 +18,13 @@ fun Navigation(){
         composable(route=Screen.Start.route){
             StartScreen(navController = navController)
         }
-        composable(route = Screen.Main.route+"/{lib_name}", arguments = listOf(
+        composable(route = Screen.CreateNew.route){
+            CreateNewScreen(navController)
+        }
+        composable(route = (Screen.Main.route+"/{lib_name}"), arguments = listOf(
             navArgument("lib_name"){
                 this.type = NavType.StringType
-                this.nullable = true
-                this.defaultValue = null
+                this.nullable = false
             }
         )){entry->
             MainScreen(navController = navController, libName =  entry.arguments?.getString("lib_name"))
@@ -29,5 +32,6 @@ fun Navigation(){
         composable(route = Screen.Libs.route){
             LibsScreen(navController)
         }
+
     }
 }

@@ -20,10 +20,8 @@ class LibsFragment : Fragment() {
 
     private lateinit var binding : FragmentLibsBinding
 
-    @Inject
-    lateinit var viewModel : LibsViewModel
 
-    private lateinit var adapter: LibsAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,12 +38,6 @@ class LibsFragment : Fragment() {
 
 
 
-
-        adapter = LibsAdapter(viewModel)
-        binding.libsRecyclerData.adapter = adapter
-
-
-        viewModel.initLibsViewModel()
 
 
         return binding.root
@@ -72,17 +64,6 @@ class LibsFragment : Fragment() {
     private fun initFlows(){
 
 
-
-        lifecycleScope.launch {
-            viewModel.libsFlow.collect {
-                if (it.isEmpty()){
-                    binding.libsTextViewFak.text = "FAK EMPTY"
-                } else{
-                    binding.libsTextViewFak.text = "Select ur lib"
-                }
-                adapter.submitData(PagingData.from(it))
-            }
-        }
 
     }
 
