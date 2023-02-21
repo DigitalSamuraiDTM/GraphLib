@@ -5,16 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.digitalsamurai.graphlib.GraphLibApp
-import com.digitalsamurai.graphlib.R
 import com.digitalsamurai.graphlib.databinding.FragmentLibsBinding
-import com.digitalsamurai.graphlib.ui.main.MainFragment
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class LibsFragment : Fragment() {
 

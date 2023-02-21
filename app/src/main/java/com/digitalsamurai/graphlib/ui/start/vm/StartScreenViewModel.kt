@@ -31,7 +31,7 @@ class StartScreenViewModel : ViewModel() {
         return _state
     }
     init{
-        GraphLibApp.startComponent.injectStartViewModel(this)
+        GraphLibApp.appComponent.injectStartViewModel(this)
         viewModelScope.launch {
             _state.value = StartScreenState(preferences.lastOpenedGraph,database.libDao().countLibs()!=0)
         }

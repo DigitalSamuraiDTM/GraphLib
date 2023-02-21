@@ -5,7 +5,8 @@ import android.content.Context
 import com.digitalsamurai.graphlib.di.AppComponent
 import com.digitalsamurai.graphlib.di.AppModule
 import com.digitalsamurai.graphlib.di.DaggerAppComponent
-import com.digitalsamurai.graphlib.di.general.StartComponent
+import com.digitalsamurai.graphlib.di.general.MainComponent
+import com.digitalsamurai.graphlib.di.general.MainModule
 
 class GraphLibApp: Application() {
 
@@ -18,16 +19,18 @@ class GraphLibApp: Application() {
     companion object{
         lateinit var applicationContext : Context
 
-
         val appComponent : AppComponent
         get() {
             return DaggerAppComponent.builder().appModule(AppModule(this.applicationContext)).build()
         }
-        val startComponent : StartComponent
+        val startComponent : MainComponent
         get() {
-            return appComponent.mainComponent()
+            return appComponent.mainComponent(MainModule())
         }
-
+        val mainComponent : MainComponent
+        get() {
+            return appComponent.mainComponent(MainModule())
+        }
 
     }
 }

@@ -34,7 +34,7 @@ class CreateLibViewModel : ViewModel() {
 
     init {
 
-        GraphLibApp.startComponent.injectCreateLibViewModel(this)
+        GraphLibApp.appComponent.injectCreateLibViewModel(this)
     }
 
     //only for lib name text field

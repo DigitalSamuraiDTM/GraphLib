@@ -39,10 +39,10 @@ class DatabaseTest {
     fun testInsertAndDeleteLib() = runBlocking {
         val lib = Lib("TestLib",LocalDateTime.now())
         db.libDao().insertLib(lib)
-        val count = db.libDao().getCountLibs()
+        val count = db.libDao().countLibs()
         assert(count==1)
         db.libDao().deleteLib(lib)
-        assert(db.libDao().getCountLibs()==0)
+        assert(db.libDao().countLibs()==0)
 
 
     }

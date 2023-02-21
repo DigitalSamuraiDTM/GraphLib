@@ -30,7 +30,7 @@ class LibsScreenViewModel : ViewModel() {
     }
 
     init {
-        GraphLibApp.startComponent.injectLibsViewModel(this)
+        GraphLibApp.appComponent.injectLibsViewModel(this)
 
         libsState = database.libDao().observeAll()
     }

@@ -1,7 +1,11 @@
 package com.digitalsamurai.graphlib.di
 
 import com.digitalsamurai.graphlib.database.di.DatabaseModule
-import com.digitalsamurai.graphlib.di.general.StartComponent
+import com.digitalsamurai.graphlib.di.general.MainComponent
+import com.digitalsamurai.graphlib.di.general.MainModule
+import com.digitalsamurai.graphlib.ui.createlib.vm.CreateLibViewModel
+import com.digitalsamurai.graphlib.ui.libs.LibsScreenViewModel
+import com.digitalsamurai.graphlib.ui.start.vm.StartScreenViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -10,6 +14,11 @@ import javax.inject.Singleton
 interface AppComponent {
 
     //subcomponent
-    fun mainComponent() : StartComponent
+    fun mainComponent(mainModule: MainModule) : MainComponent
 
+    fun injectStartViewModel(viewModel : StartScreenViewModel)
+
+    fun injectCreateLibViewModel(viewModel : CreateLibViewModel)
+
+    fun injectLibsViewModel(libsScreenViewModel: LibsScreenViewModel)
 }

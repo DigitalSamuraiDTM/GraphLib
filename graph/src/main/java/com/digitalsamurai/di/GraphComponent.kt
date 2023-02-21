@@ -7,7 +7,7 @@ import dagger.Subcomponent
 import javax.inject.Singleton
 
 @GraphScope
-@Subcomponent(modules = [GraphModule::class])
+@Subcomponent(modules = [GraphModule::class,])
 interface GraphComponent{
 
 
