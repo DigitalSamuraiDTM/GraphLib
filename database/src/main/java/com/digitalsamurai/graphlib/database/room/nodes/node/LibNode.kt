@@ -1,4 +1,4 @@
-package com.digitalsamurai.graphlib.database.room.nodes
+package com.digitalsamurai.graphlib.database.room.nodes.node
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -7,10 +7,15 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.digitalsamurai.graphlib.database.room.libs.Lib
-import com.digitalsamurai.graphlib.database.room.nodes.entity.ChildNodes
+import com.digitalsamurai.graphlib.database.room.nodes.node.entity.ChildNodes
 
 @Entity(tableName = LibNode.TABLE_NAME,
-        foreignKeys = [ForeignKey(onDelete = CASCADE, entity = Lib::class, parentColumns = [Lib.COLUMN_LIB_NAME], childColumns = [LibNode.COLUMN_PARENT_LIB_NAME])],
+        foreignKeys = [
+                ForeignKey(
+                        onDelete = CASCADE,
+                        entity = Lib::class,
+                        parentColumns = [Lib.COLUMN_LIB_NAME],
+                        childColumns = [LibNode.COLUMN_PARENT_LIB_NAME])],
         indices = [Index(LibNode.COLUMN_NODE_PRIMARY_INDEX)]
 )
 data class LibNode (
@@ -27,9 +32,8 @@ data class LibNode (
         @ColumnInfo(name = COLUMN_NODE_INDEX_PRIMARY)
         val parentIndex : Long?,
 
-        @ColumnInfo(name = COLUMN_NODE_CHILD_LIST)
+        @ColumnInfo(name = COLUMN_NODE_IS_ROOT)
         val childs : ChildNodes,
-
 
         @ColumnInfo(name = COLUMN_NODE_PRIMARY_INDEX)
         @PrimaryKey(autoGenerate = true)
@@ -38,9 +42,8 @@ data class LibNode (
         ){
 
         companion object{
-                const val COLUMN_NODE_CHILD_LIST = "is_root_node"
                 const val COLUMN_NODE_INDEX_PRIMARY = "parent_index"
-//                const val COLUMN_NODE_IS_ROOT = "node_childs"
+                const val COLUMN_NODE_IS_ROOT = "node_childs"
                 const val COLUMN_NODE_TITLE = "node_title"
                 const val TABLE_NAME = "lib_nodes"
                 const val COLUMN_NODE_PRIMARY_INDEX = "node_index"

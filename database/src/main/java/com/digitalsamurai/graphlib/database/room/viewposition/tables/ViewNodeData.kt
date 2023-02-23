@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
-import com.digitalsamurai.graphlib.database.room.nodes.LibNode
+import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 
 @Entity(tableName = ViewNodeData.TABLE_NAME,
         foreignKeys = [ForeignKey(

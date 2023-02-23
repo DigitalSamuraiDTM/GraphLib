@@ -1,4 +1,4 @@
-package com.digitalsamurai.graphlib.database.room.nodes.entity
+package com.digitalsamurai.graphlib.database.room.nodes.node.entity
 
 import com.google.gson.annotations.SerializedName
 

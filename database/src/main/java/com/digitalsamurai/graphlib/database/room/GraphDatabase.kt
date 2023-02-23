@@ -7,10 +7,10 @@ import com.digitalsamurai.graphlib.database.room.converters.LocalDateTimeConvert
 import com.digitalsamurai.graphlib.database.room.converters.NodeChildListConverter
 import com.digitalsamurai.graphlib.database.room.libs.Lib
 import com.digitalsamurai.graphlib.database.room.libs.LibDao
-import com.digitalsamurai.graphlib.database.room.nodes.LibNode
-import com.digitalsamurai.graphlib.database.room.nodes.LibNodeDao
+import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
+import com.digitalsamurai.graphlib.database.room.nodes.node.LibNodeDao
 
-@Database(entities = [Lib::class,LibNode::class], version = 1)
+@Database(entities = [Lib::class, LibNode::class], version = 1)
 @TypeConverters(LocalDateTimeConverter::class, NodeChildListConverter::class)
 abstract class GraphDatabase : RoomDatabase() {
 

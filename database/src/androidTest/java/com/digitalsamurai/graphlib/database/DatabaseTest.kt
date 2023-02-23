@@ -6,9 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.database.room.libs.Lib
-import com.digitalsamurai.graphlib.database.room.nodes.LibNode
-import com.digitalsamurai.graphlib.database.room.nodes.LibNodeDao
-import com.digitalsamurai.graphlib.database.room.nodes.entity.ChildNodes
+import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
+import com.digitalsamurai.graphlib.database.room.nodes.node.entity.ChildNodes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After

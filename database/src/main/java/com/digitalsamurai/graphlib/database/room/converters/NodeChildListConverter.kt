@@ -1,7 +1,7 @@
 package com.digitalsamurai.graphlib.database.room.converters
 
 import androidx.room.TypeConverter
-import com.digitalsamurai.graphlib.database.room.nodes.entity.ChildNodes
+import com.digitalsamurai.graphlib.database.room.nodes.node.entity.ChildNodes
 import com.google.gson.Gson
 
 class NodeChildListConverter {
@@ -13,7 +13,7 @@ class NodeChildListConverter {
         return gson.toJson(data)
     }
     @TypeConverter
-    fun fromDatabaseString(data : String) : ChildNodes{
-        return gson.fromJson(data,ChildNodes::class.java)
+    fun fromDatabaseString(data : String) : ChildNodes {
+        return gson.fromJson(data, ChildNodes::class.java)
     }
 }
