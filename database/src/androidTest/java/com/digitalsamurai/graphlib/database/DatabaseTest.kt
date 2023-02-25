@@ -63,6 +63,14 @@ class DatabaseTest {
         println(childChildIndex)
     }
 
+    @Test
+    fun testEmptyRootNode() = runBlocking {
+        val libNodeDao = db.libNodeDao()
+
+        val root = libNodeDao.getRootNodeByLib("testTableNotExist")
+        assert(root==null)
+    }
+
     @After
     fun after(){
         db.close()

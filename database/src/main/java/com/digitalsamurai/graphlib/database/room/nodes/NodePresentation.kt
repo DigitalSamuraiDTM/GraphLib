@@ -12,8 +12,14 @@ data class NodePresentation(
 
     var nodePosition: NodePosition? = defaultNodePosition(nodeInfo.nodeIndex),
 
-    var nodeViewProperty: NodeViewProperty? = defaultNodeViewProperty(nodeInfo.nodeIndex)
+    var nodeViewProperty: NodeViewProperty? = defaultNodeViewProperty(nodeInfo.nodeIndex),
+
+    var childs : List<NodePresentation>
 )  {
+
+
+
+
 
     companion object{
         fun defaultNodePosition(nodeIndex : Long) = NodePosition(nodeIndex = nodeIndex,0,0)

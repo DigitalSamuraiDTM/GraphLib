@@ -88,6 +88,8 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.google.dagger:hilt-android:$dagger_version"
     annotationProcessor "com.google.dagger:hilt-compiler:$dagger_version"
+    compileOnly 'com.squareup.inject:assisted-inject-annotations-dagger2:0.5.0'
+    kapt 'com.squareup.inject:assisted-inject-processor-dagger2:0.5.0'
 
     //VIEWMODEL
     def view_model_live_data_version = "2.2.0"

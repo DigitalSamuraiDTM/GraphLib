@@ -2,16 +2,15 @@ package com.digitalsamurai.graphlib.ui.main.vm
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.layout.Layout
 import androidx.lifecycle.ViewModel
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.preferences.GraphPreferences
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
+import com.digitalsamurai.graphlib.database.tree.TreeManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-
 
 @HiltViewModel
 class MainViewModel : ViewModel(), MainViewModelUI {
@@ -24,12 +23,16 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     @Inject
     lateinit var database: GraphDatabase
 
+    @Inject
+    lateinit var treeManagerFactory: TreeManager.Factory
+    lateinit var treeManager: TreeManager
+
     private var _library = mutableStateOf<String>("")
     override val library: State<String>
         get() =_library
 
     init {
-        GraphLibApp.mainComponent.injectMainViewModel(this)
+
     }
 
 
@@ -38,6 +41,8 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     fun initData(libName : String?){
         libName?.let {
             _library.value = libName
+            GraphLibApp.mainComponent.injectMainViewModel(this)
+            treeManager = treeManagerFactory.build(it)
         }
         preferences.lastOpenedGraph = libName
 
@@ -45,6 +50,7 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     }
 
 }
+
 @Composable
 fun ReverseFlowRow(
     content: @Composable () -> Unit

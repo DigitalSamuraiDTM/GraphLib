@@ -23,9 +23,11 @@ interface LibNodeDao {
     suspend fun insert(libNode: LibNode) : Long{
         val index = insertUnsafely(libNode)
         if (libNode.parentIndex!=null){
-            val parentNode = getNodeByIndex(libNode.parentIndex)
-            parentNode.childs.childs.addAll(listOf(index.toInt()))
-            updateNode(parentNode)
+           getNodeByIndex(libNode.parentIndex)?.let {
+               it.childs.childs.addAll(listOf(index))
+               updateNode(it)
+
+           }
         }
         return index
     }
@@ -38,10 +40,10 @@ interface LibNodeDao {
     fun updateNode(libNode: LibNode)
 
     @Query("SELECT * FROM ${LibNode.TABLE_NAME} WHERE ${LibNode.COLUMN_NODE_PRIMARY_INDEX}=:index")
-    suspend fun getNodeByIndex(index: Long) : LibNode
+    suspend fun getNodeByIndex(index: Long) : LibNode?
 
     @Query("SELECT * FROM ${LibNode.TABLE_NAME} WHERE ${LibNode.COLUMN_NODE_PRIMARY_INDEX}=NULL AND ${LibNode.COLUMN_PARENT_LIB_NAME}=:libName")
-    suspend fun getRootNodeByLib(libName : String) : LibNode
+    suspend fun getRootNodeByLib(libName : String) : LibNode?
 
     @Delete
     suspend fun deleteUnsafely(vararg node: LibNode)
@@ -52,9 +54,13 @@ interface LibNodeDao {
             NodeDeleteStrategy.CONNECT_CHILDREN_TO_PARENT -> {
                 if (libNode.parentIndex!=null){
                     val parentNode = getNodeByIndex(libNode.parentIndex)
-                    parentNode.childs.childs.addAll(libNode.childs.childs)
-                    updateNode(parentNode)
-                    deleteUnsafely(libNode)
+                    parentNode?.let {
+                        parentNode.childs.childs.addAll(libNode.childs.childs)
+                        updateNode(parentNode)
+                        deleteUnsafely(libNode)
+                        return
+                    }
+                    //need some log
                 } else{
                     throw java.lang.Exception("Delete root node?")
                     //todo delete root node?

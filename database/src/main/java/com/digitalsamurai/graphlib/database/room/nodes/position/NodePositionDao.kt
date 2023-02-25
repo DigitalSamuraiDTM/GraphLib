@@ -16,7 +16,7 @@ interface NodePositionDao {
     suspend fun deleteNodePosition(nodePosition: NodePosition)
 
     @Query("SELECT * FROM ${NodePosition.TABLE_NAME} WHERE ${NodePosition.COLUMN_NODE_INDEX}=:nodeIndex")
-    suspend fun getNodeByIndex(nodeIndex : Int) : NodePosition
+    suspend fun getNodeByIndex(nodeIndex: kotlin.Long) : NodePosition?
 
     @Update
     suspend fun updateNodePosition(nodePosition: NodePosition)

@@ -1,6 +1,6 @@
 package com.digitalsamurai.graphlib.di
 
-import com.digitalsamurai.graphlib.database.di.DatabaseModule
+import com.digitalsamurai.graphlib.database.di.modules.DatabaseModule
 import com.digitalsamurai.graphlib.di.general.MainComponent
 import com.digitalsamurai.graphlib.di.general.MainModule
 import com.digitalsamurai.graphlib.ui.createlib.vm.CreateLibViewModel
