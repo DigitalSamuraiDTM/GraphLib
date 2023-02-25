@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.database.room.libs.Lib
+import com.digitalsamurai.graphlib.database.tree.TreeManager
 import com.digitalsamurai.graphlib.ui.createlib.state.EnteredNameState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

@@ -3,6 +3,7 @@ package com.digitalsamurai.graphlib.database.room.nodes.position
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.digitalsamurai.graphlib.database.room.libs.Lib
 import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 
@@ -15,6 +16,7 @@ import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
             childColumns = [NodePosition.COLUMN_NODE_INDEX])],
 )
 data class NodePosition (
+        @PrimaryKey
         @ColumnInfo(name = COLUMN_NODE_INDEX)
         val nodeIndex : Long,
 
