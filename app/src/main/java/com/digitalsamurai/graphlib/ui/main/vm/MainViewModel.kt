@@ -5,11 +5,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.layout.Layout
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.preferences.GraphPreferences
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.database.tree.TreeManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,8 +22,7 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     @Inject
     lateinit var preferences : GraphPreferences
 
-    @Inject
-    lateinit var database: GraphDatabase
+
 
     @Inject
     lateinit var treeManagerFactory: TreeManager.Factory
@@ -43,13 +44,25 @@ class MainViewModel : ViewModel(), MainViewModelUI {
             _library.value = libName
             GraphLibApp.mainComponent.injectMainViewModel(this)
             treeManager = treeManagerFactory.build(it)
+            initTree()
         }
         preferences.lastOpenedGraph = libName
 
 
     }
 
+    private fun initTree(){
+        viewModelScope.launch {
+            val rootNode = treeManager.initTree()
+
+        }
+    }
+
+
+
 }
+
+
 
 @Composable
 fun ReverseFlowRow(

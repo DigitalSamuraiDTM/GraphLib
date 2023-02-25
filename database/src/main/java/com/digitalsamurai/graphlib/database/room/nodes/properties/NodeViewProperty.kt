@@ -33,7 +33,7 @@ data class NodeViewProperty (
                 const val COLUMN_WIDTH = "node_width"
                 const val COLUMN_HEIGHT = "node_height"
 
-                const val DEFAULT_WIDTH = 200
-                const val DEFAULT_HEIGHT = 200
+                const val DEFAULT_WIDTH = 100
+                const val DEFAULT_HEIGHT = 100
         }
 }
