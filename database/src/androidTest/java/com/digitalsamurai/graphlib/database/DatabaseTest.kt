@@ -67,8 +67,22 @@ class DatabaseTest {
     fun testEmptyRootNode() = runBlocking {
         val libNodeDao = db.libNodeDao()
 
-        val root = libNodeDao.getRootNodeByLib("testTableNotExist")
+        val testLib = Lib("test", LocalDateTime.now())
+
+        var root = libNodeDao.getRootNodeByLib("test")
         assert(root==null)
+
+        val libDao = db.libDao()
+        libDao.insertLib(testLib)
+        val index = libNodeDao.insert(LibNode("test","Main",null,ChildNodes(),0))
+
+        root = libNodeDao.getRootNodeByLib("test")
+        assert(root!=null)
+
+        libDao.deleteLib(testLib)
+
+        assert(true)
+
     }
 
     @After

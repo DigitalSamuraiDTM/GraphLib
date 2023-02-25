@@ -42,7 +42,7 @@ interface LibNodeDao {
     @Query("SELECT * FROM ${LibNode.TABLE_NAME} WHERE ${LibNode.COLUMN_NODE_PRIMARY_INDEX}=:index")
     suspend fun getNodeByIndex(index: Long) : LibNode?
 
-    @Query("SELECT * FROM ${LibNode.TABLE_NAME} WHERE ${LibNode.COLUMN_NODE_PRIMARY_INDEX}=NULL AND ${LibNode.COLUMN_PARENT_LIB_NAME}=:libName")
+    @Query("SELECT * FROM ${LibNode.TABLE_NAME} WHERE ${LibNode.COLUMN_PARENT_NODE_INDEX} IS NULL AND ${LibNode.COLUMN_PARENT_LIB_NAME}=:libName")
     suspend fun getRootNodeByLib(libName : String) : LibNode?
 
     @Delete

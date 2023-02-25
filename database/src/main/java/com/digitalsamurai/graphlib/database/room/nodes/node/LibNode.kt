@@ -1,5 +1,6 @@
 package com.digitalsamurai.graphlib.database.room.nodes.node
 
+import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -29,7 +30,7 @@ data class LibNode (
         val title : String,
 
         //IF NULL -> that node is root node
-        @ColumnInfo(name = COLUMN_NODE_INDEX_PRIMARY)
+        @ColumnInfo(name = COLUMN_PARENT_NODE_INDEX)
         val parentIndex : Long?,
 
         @ColumnInfo(name = COLUMN_NODE_IS_ROOT)
@@ -42,7 +43,7 @@ data class LibNode (
         ){
 
         companion object{
-                const val COLUMN_NODE_INDEX_PRIMARY = "parent_index"
+                const val COLUMN_PARENT_NODE_INDEX = "parent_index"
                 const val COLUMN_NODE_IS_ROOT = "node_childs"
                 const val COLUMN_NODE_TITLE = "node_title"
                 const val TABLE_NAME = "lib_nodes"

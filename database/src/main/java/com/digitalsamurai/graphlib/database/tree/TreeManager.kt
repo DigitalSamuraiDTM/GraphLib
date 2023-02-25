@@ -8,8 +8,8 @@ import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 class TreeManager  private constructor(val libraryName : String,val database: GraphDatabase) {
 
     init {
-        val a = DaggerDatabaseComponent.create()
-        val b = a
+
+
     }
 
     /**
@@ -24,7 +24,6 @@ class TreeManager  private constructor(val libraryName : String,val database: Gr
         } else{
             null
         }
-
     }
     /**
      * Childs with recursion. May be use a lot of memory

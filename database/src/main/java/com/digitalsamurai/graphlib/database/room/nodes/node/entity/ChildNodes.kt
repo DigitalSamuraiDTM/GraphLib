@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class ChildNodes(
     @SerializedName("childs")
-    var childs : ArrayList<Long>
+    var childs : ArrayList<Long> = ArrayList()
 )
