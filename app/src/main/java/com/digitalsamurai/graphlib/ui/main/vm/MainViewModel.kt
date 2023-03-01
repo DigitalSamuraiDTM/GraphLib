@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.preferences.GraphPreferences
-import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.database.tree.TreeManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -53,7 +52,7 @@ class MainViewModel : ViewModel(), MainViewModelUI {
 
     private fun initTree(){
         viewModelScope.launch {
-            val rootNode = treeManager.initTree()
+            val rootNode = treeManager.getRootNode()
 
         }
     }

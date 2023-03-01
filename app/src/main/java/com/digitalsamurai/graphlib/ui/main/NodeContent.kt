@@ -26,11 +26,12 @@ fun NodePresentation.view(viewModel: NodePresentationViewModel){
         onClick = { viewModel.clickEvent(this) },
         modifier = Modifier
             .width(this.nodeViewProperty.width.dp)
-            .height(this.nodeViewProperty.height.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)) {
+            .height(this.nodeViewProperty.height.dp)
+            .position(this.nodePosition.xPosition,this.nodePosition.yPosition),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)) {
             Text(text = this@view.nodeInfo.title,
                 textAlign = TextAlign.Center,
-                color = Color.Black)
+                color = Color.White)
 
     }
 }

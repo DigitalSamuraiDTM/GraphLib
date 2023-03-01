@@ -27,7 +27,7 @@ data class LibNode (
 
 
         @ColumnInfo(name = COLUMN_NODE_TITLE)
-        val title : String,
+        var title : String,
 
         //IF NULL -> that node is root node
         @ColumnInfo(name = COLUMN_PARENT_NODE_INDEX)

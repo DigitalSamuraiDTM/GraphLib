@@ -18,11 +18,19 @@ data class NodePresentation(
 
     var nodeViewProperty: NodeViewProperty = defaultNodeViewProperty(nodeInfo.nodeIndex),
 
-    var childs : List<NodePresentation> = emptyList()
+    var childs : List<NodePresentation> = emptyList(),
+
+    //null when node is root node
+    var parentNode : NodePresentation? = null
 )  {
 
 
-
+    /**
+     * Function need for updating parent node when we finally create parent node and we can set parent node
+     */
+    fun updateParentNode(parentNode: NodePresentation){
+        this.parentNode = parentNode
+    }
 
 
     companion object{
@@ -34,7 +42,7 @@ data class NodePresentation(
         private var nodePosition = defaultNodePosition(nodeInfo.nodeIndex)
         private var nodeViewProperty = defaultNodeViewProperty(nodeInfo.nodeIndex)
         private var childs : List<NodePresentation> = emptyList()
-
+        private var parentNode : NodePresentation? = null
 
         fun setNodePosition(nodePosition: NodePosition?) : Builder {
             nodePosition?.let {
@@ -55,9 +63,13 @@ data class NodePresentation(
             }
             return this
         }
+        fun setParentNode(parentNode: NodePresentation?) : Builder{
+            this.parentNode = parentNode
+            return this
+        }
 
         fun build() : NodePresentation{
-            return NodePresentation(nodeInfo,nodePosition,nodeViewProperty, childs)
+            return NodePresentation(nodeInfo,nodePosition,nodeViewProperty, childs,parentNode)
         }
     }
 }
