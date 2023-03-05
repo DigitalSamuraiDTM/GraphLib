@@ -94,9 +94,9 @@ class TreeManagerTest {
     private fun showAllTreeInConsole(parent : NodePresentation){
         println(parent.nodeInfo.nodeIndex)
         parent.childs.forEach {
-            println("go deep to ${it.nodeInfo.nodeIndex}")
+            println("go deep to ${it.nodeInfo.nodeIndex}. His parent: ${it.parentNode?.nodeInfo?.nodeIndex}")
             showAllTreeInConsole(it)
-            println("emerge to ${parent.nodeInfo.nodeIndex}")
+            println("emerge to ${parent.nodeInfo.nodeIndex}. His parent: ${parent.parentNode?.nodeInfo?.nodeIndex}")
         }
     }
 

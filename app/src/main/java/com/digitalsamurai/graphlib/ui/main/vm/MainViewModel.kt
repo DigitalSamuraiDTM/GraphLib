@@ -32,18 +32,20 @@ class MainViewModel : ViewModel(), MainViewModelUI {
         get() =_library
 
     init {
-
+        GraphLibApp.mainComponent.injectMainViewModel(this@MainViewModel)
     }
 
 
 
 
     fun initData(libName : String?){
-        libName?.let {
-            _library.value = libName
-            GraphLibApp.mainComponent.injectMainViewModel(this)
-            treeManager = treeManagerFactory.build(it)
-            initTree()
+        viewModelScope.launch {
+            libName?.let {
+                _library.value = libName
+                treeManager = treeManagerFactory.build(it)
+                initTree()
+            }
+
         }
         preferences.lastOpenedGraph = libName
 
