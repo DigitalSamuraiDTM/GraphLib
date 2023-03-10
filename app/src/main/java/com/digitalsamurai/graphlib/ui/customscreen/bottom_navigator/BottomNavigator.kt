@@ -20,7 +20,6 @@ import com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator.entity.Botto
 import com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator.entity.BottomNavigatorUi
 
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun BottomNavigator(
 
@@ -28,19 +27,11 @@ fun BottomNavigator(
     modifier: Modifier = Modifier
 ) {
 
-    AnimatedContent(targetState = viewModel.navigatorState,
-        transitionSpec = {
-            slideInHorizontally(
-                animationSpec = tween(300),
-                initialOffsetX = { fullWidth: Int -> fullWidth }
-            ) with
-                    slideOutHorizontally(
-                        animationSpec = tween(300),
-                        targetOffsetX = { fullWidth -> -fullWidth }
-                    )
-        }) { state->
 
-        val value = state.value
+        val value = viewModel.navigatorState.value
+
+
+    //сравниваем состояния
         Row(
             modifier = modifier
                 .background(Color.White)
@@ -49,118 +40,99 @@ fun BottomNavigator(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            when(value){
-                BottomNavigatorState.NoElements -> {
-                    Text(text = "No focused element")
-                }
-                is BottomNavigatorState.Root -> {
-                    //CURRENT
-                    Box(Modifier
+
+                AnimatedVisibility(
+                    visible = value.prevoius!=null,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
+                    enter = slideInHorizontally(),
+                    exit = slideOutHorizontally()
+                ) {
+                    Box(modifier = Modifier
                         .fillMaxSize()
                         .weight(1f)
-                        .clickable { viewModel.bottomNavigatorClicked(value.current.nodeIndex) }) {
-                        Text(text = value.current.title,
+                        .clickable {
+                            value.prevoius?.let {
+                                viewModel.bottomNavigatorClicked(value.prevoius)
+                            }
+                        }) {
+                        Text(text = value.prevoius?.title ?: "",
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center))
+                            modifier = Modifier.align(
+                                Alignment.Center))
                     }
-                    //NEXT
-                    if (value.child!=null){
-                        Box(modifier = Modifier
-                            .widthIn(10.dp)){
-                            Image(painter = painterResource(id = R.drawable.ic_double_arrow_right_black),"Next element")
+                }
+            AnimatedVisibility(
+                visible = value.prevoius!=null,
+                modifier = Modifier.widthIn(10.dp)) {
+                Box(modifier = Modifier.clickable { viewModel.bottomNavigatorClicked(value.current) }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_double_arrow_right_black),
+                        contentDescription = "next"
+                    )
+                }
+
+            }
+            //CURRENT
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)) {
+                Text(text = value.current.title,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(
+                        Alignment.Center))
+            }
+            AnimatedVisibility(
+                visible = value.next.isNotEmpty(),
+                modifier = Modifier.widthIn(10.dp)) {
+                Box() {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_double_arrow_right_black),
+                        contentDescription = "next"
+                    )
+                }
+            }
+            AnimatedVisibility(
+                visible = value.next.isNotEmpty(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
+                enter = slideInHorizontally(),
+                exit = slideOutHorizontally()
+            ) {
+                val nextPreview = if (value.next.isNotEmpty()) value.next[0] else null
+
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+                    .clickable {
+                        nextPreview?.let {
+                            viewModel.bottomNavigatorClicked(nextPreview)
                         }
-                        Box(modifier = Modifier
-                            .fillMaxSize()
-                            .weight(1f)
-                            .clickable { viewModel.bottomNavigatorClicked(value.child.nodeIndex) }){
-                            Text(
-                                text = value.child.title,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.align(Alignment.Center))
-                        }
-                    }
-
+                    }){
+                    Text(text = nextPreview?.title ?: "",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.Center))
                 }
-                is BottomNavigatorState.ChainElement -> {
-                    //PREVIOUS
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f)
-                        .clickable { viewModel.bottomNavigatorClicked(value.parent.nodeIndex) }){
-                        Text(
-                            text = value.parent.title,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center))
-                    }
-                    Box(modifier = Modifier
-                        .widthIn(10.dp)){
-                        Image(painter = painterResource(id = R.drawable.ic_double_arrow_right_black),"Next element")
-                    }
-                    //CURRENT
-                    Box(Modifier
-                        .fillMaxSize()
-                        .weight(1f)
-                        .clickable { viewModel.bottomNavigatorClicked(value.current.nodeIndex) }) {
-                        Text(text = value.current.title,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center))
-                    }
 
-                    //CHILD
-                    val child = value.childs[0]
-                    Box(modifier = Modifier
-                        .widthIn(10.dp)){
-                        Image(painter = painterResource(id = R.drawable.ic_double_arrow_right_black),"Next element")
-                    }
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f)
-                        .clickable { viewModel.bottomNavigatorClicked(child.nodeIndex) }){
-                        Text(
-                            text = child.title,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center))
-                    }
 
-                }
-                is BottomNavigatorState.LastElement -> {
-                    //PREVIOUS
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f)
-                        .clickable { viewModel.bottomNavigatorClicked(value.parent.nodeIndex) }){
-                        Text(
-                            text = value.parent.title,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center))
-                    }
-                        Box(modifier = Modifier
-                            .widthIn(10.dp)){
-                            Image(painter = painterResource(id = R.drawable.ic_double_arrow_right_black),"Next element")
-                        }
-                    //CURRENT
-                    Box(Modifier
-                        .fillMaxSize()
-                        .weight(1f)
-                        .clickable { viewModel.bottomNavigatorClicked(value.current.nodeIndex) }) {
-                        Text(text = value.current.title,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center))
-                    }
 
-                }
+            }
+
+
+
             }
 
 
         }
-    }
 
-}
 
 
 @Composable
 @Preview
 private fun PreviewBottomNavigator() {
+
 
 
     Box(
@@ -169,56 +141,43 @@ private fun PreviewBottomNavigator() {
             .background(Color.DarkGray)
     ) {
 
-        AnimatedVisibility(visible = true) {
-            BottomNavigator(
-                mockViewModel,
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(10.dp)
-            )
+        BottomNavigator(
+            mockViewModel,
+            Modifier
+                .align(Alignment.BottomCenter)
+                .padding(10.dp)
+        )
 
-        }
+
     }
 }
 
 private val mockViewModel = object : BottomNavigatorViewModel {
 
 
-    override fun bottomNavigatorClicked(index: Long) {
-        if (index==3L || index==4L){
-            _navigatorState.value = last
-        }
-        if (index==10L){
-            _navigatorState.value = chain
-        }
-        if (index==12L){
-            _navigatorState.value = rootWithChild
-        }
-        if (index==1L){
-            _navigatorState.value = chain
+    override fun bottomNavigatorClicked(element: BottomNavigatorUi) {
+        if (element.nodeIndex==0L){
+            _navigatorState.value = BottomNavigatorState(null,c0, listOf(c1))
+        } else if (element.nodeIndex==1L){
+            _navigatorState.value = BottomNavigatorState(c0,c1, listOf(c2,c3,c4))
+        } else if (element.nodeIndex==2L){
+            _navigatorState.value = BottomNavigatorState(c1,c2, listOf(c3))
+        } else if (element.nodeIndex==3L){
+            _navigatorState.value = BottomNavigatorState(c2,c3, listOf())
         }
     }
 
-    val childsList = listOf(
-        BottomNavigatorUi("child1",3),
-        BottomNavigatorUi("child2",4))
+    val c0 = BottomNavigatorUi("c0",0)
+    val c1 = BottomNavigatorUi("c1",1)
+    val c2 = BottomNavigatorUi("c2",2)
+    val c3 = BottomNavigatorUi("c3",3)
+    val c4 = BottomNavigatorUi("c4",4)
 
-    val rootWithChild = BottomNavigatorState.Root(
-        BottomNavigatorUi("rootrootrootrootrootrootrootrootrootrootrootroot",0),
-        BottomNavigatorUi("childchildchildchildchildchildchildchildchildchild",1))
-    val rootNoChild = BottomNavigatorState.Root(
-        BottomNavigatorUi("rootrootrootrootrootrootrootrootrootrootrootroot",0),null)
-    val noElements = BottomNavigatorState.NoElements
-    val chain = BottomNavigatorState.ChainElement(
-        parent = BottomNavigatorUi("parent",12),
-        current = BottomNavigatorUi("current",1),
-        childs = childsList)
-    val last = BottomNavigatorState.LastElement(
-        parent = BottomNavigatorUi("parent",10),
-        current = BottomNavigatorUi("current",11)
+    private var _navigatorState = mutableStateOf<BottomNavigatorState>(
+        BottomNavigatorState(c0,c1,
+            listOf(c2,c4)
+        )
     )
-
-    private var _navigatorState = mutableStateOf<BottomNavigatorState>(chain)
     override val navigatorState: State<BottomNavigatorState>
-        get() = _navigatorState
+    get() = _navigatorState
 }
