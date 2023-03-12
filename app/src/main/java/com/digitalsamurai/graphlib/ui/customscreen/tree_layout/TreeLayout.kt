@@ -1,6 +1,9 @@
 package com.digitalsamurai.graphlib.ui.main
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,9 +35,15 @@ fun TreeLayout(modifier: Modifier, content: @Composable () -> Unit) {
     val screenWidthDp = lo.current.screenWidthDp.dp.toPx().toInt()
     val screenHeightDp = lo.current.screenHeightDp.dp.toPx().toInt()
 
+//    var defaultBoxSize = 500000
+    var defaultBoxSize = 1000000
 
-    val horizontalScrollState = rememberScrollState(0)
-    val verticalScrollState = rememberScrollState(0)
+
+    //1374900 For pixel 5
+    val horizontalScrollState = rememberScrollState()
+    val verticalScrollState = rememberScrollState()
+
+    defaultBoxSize = defaultBoxSize.dp.toPx().toInt()
 
     val elementsPadding = 30
 
@@ -42,8 +51,7 @@ fun TreeLayout(modifier: Modifier, content: @Composable () -> Unit) {
 
     Layout(
         modifier = modifier
-            .verticalScroll(verticalScrollState, reverseScrolling = false)
-            .horizontalScroll(horizontalScrollState, reverseScrolling = false),
+            ,
         content = content
     ) { measurables, constraints ->
 
@@ -53,38 +61,24 @@ fun TreeLayout(modifier: Modifier, content: @Composable () -> Unit) {
         // Don't constrain child views further, measure them with given constraints
         // List of measured children
 
-        val positionList = mutableListOf<ViewPosition>()
+        val positionList = mutableListOf<ViewPosition?>()
         val placeables = measurables.map { measurable ->
             // Measure each children
             val parent = try {
                 measurable.parentData as ViewPosition
             } catch (e : java.lang.NullPointerException){
                 //не добавлена ViewPosition дата
-                ViewPosition(0,0)
+                null
             }
-            parent?.let {
-                positionList.add(parent)
-            }
+
+            positionList.add(parent)
+
             measurable.measure(constraints)
 
         }
-        //размеры элемента по максимальным координатам
-        var maxWidth =
-            positionList.maxBy { kotlin.math.abs(it.x) }.x + placeables.maxBy { it.width }.width + elementsPadding
-        var maxHeight =
-            positionList.maxBy { kotlin.math.abs(it.y) }.y + placeables.maxBy { it.height }.height + elementsPadding
 
-        // Если элементов на экране недостаточно для того чтобы размер элемента был больше размера экрана,
-        // то ставим текущий размер как размер экрана
-        if (maxWidth < screenWidthDp) {
-            maxWidth = screenWidthDp
-        }
-        if (maxHeight < screenHeightDp) {
-            maxHeight = screenHeightDp
-        }
-        // Set the size of the layout as big as it can
-//        layout(height = maxHeight, width = maxWidth) {
-        layout(height = maxHeight, width = maxWidth) {
+        //Дефолтный размер коробки
+        layout(height = defaultBoxSize, width = defaultBoxSize) {
 
             // Place children in the parent layout
 
@@ -92,12 +86,22 @@ fun TreeLayout(modifier: Modifier, content: @Composable () -> Unit) {
 
                 val placeable = placeables[i]
                 val position = positionList[i]
-                placeable.placeRelative(x = position.x, y = position.y)
-                val a = placeable.height
-                val b = placeable.width
-                val c = placeable.measuredHeight
-                val d = placeable.measuredWidth
-                val e = 1
+
+                val widthPlaceable = placeable.height
+                val heightPlaceable = placeable.width
+
+                if (position != null){
+                    placeable.placeRelative(
+                        x = defaultBoxSize/2+position.x-widthPlaceable/2,
+                        y = defaultBoxSize/2-position.y-heightPlaceable/2
+                    )
+                } else{
+                    placeable.placeRelative(
+                        x = 0,
+                        y = 0)
+                }
+
+
 
             }
             // Position item on the screen
@@ -136,10 +140,10 @@ fun previewTreeLayout() {
                 LibNode("", "title2", 0, ChildNodes(), 0),
                 NodePosition(0, 300, 5000)
             ).view(mockViewModel)
-//            NodePresentation(
-//                LibNode("", "title3", 0, ChildNodes(), 0),
-//                NodePosition(0, 3000, 500)
-//            ).view(mockViewModel)
+            NodePresentation(
+                LibNode("", "title3", 0, ChildNodes(), 0),
+                NodePosition(0, 3000, 500)
+            ).view(mockViewModel)
         }
     }
 
