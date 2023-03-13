@@ -6,7 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.database.room.libs.Lib
-import com.digitalsamurai.graphlib.database.room.nodes.NodePresentation
+import com.digitalsamurai.graphlib.database.room.nodes.Node
 import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 import com.digitalsamurai.graphlib.database.room.nodes.node.entity.ChildNodes
 import com.digitalsamurai.graphlib.database.tree.TreeManager
@@ -91,7 +91,7 @@ class TreeManagerTest {
         //init tree and check all
     }
 
-    private fun showAllTreeInConsole(parent : NodePresentation){
+    private fun showAllTreeInConsole(parent : Node){
         println(parent.nodeInfo.nodeIndex)
         parent.childs.forEach {
             println("go deep to ${it.nodeInfo.nodeIndex}. His parent: ${it.parentNode?.nodeInfo?.nodeIndex}")

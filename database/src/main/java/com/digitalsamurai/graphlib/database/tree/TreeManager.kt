@@ -1,7 +1,7 @@
 package com.digitalsamurai.graphlib.database.tree
 
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
-import com.digitalsamurai.graphlib.database.room.nodes.NodePresentation
+import com.digitalsamurai.graphlib.database.room.nodes.Node
 import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 
 class TreeManager private constructor(val libraryName: String, val database: GraphDatabase) {
@@ -10,13 +10,13 @@ class TreeManager private constructor(val libraryName: String, val database: Gra
 
 
     }
-    private var rootNode : NodePresentation? = null
+    private var rootNode : Node? = null
 
     /**
      * Init Library tree with recursion. Need some time with suspend
      * @return RootNode with child nodes if exist
      * */
-    private suspend fun initTree() : NodePresentation?{
+    private suspend fun initTree() : Node?{
         val dbNode = database.libNodeDao().getRootNodeByLib(libraryName)
         return if (dbNode != null) {
             rootNode = initNodePresentation(dbNode,null)
@@ -30,7 +30,7 @@ class TreeManager private constructor(val libraryName: String, val database: Gra
      * Check every element in tree O(n)
      * todo speed can increased with indexed tree but not critical
      * */
-    fun findNodeByIndex(nodeIndex : Long) : NodePresentation? {
+    fun findNodeByIndex(nodeIndex : Long) : Node? {
         rootNode?.let {
             val c = findChildNodeByIndex(it,nodeIndex)
             if (c!=null){
@@ -47,7 +47,7 @@ class TreeManager private constructor(val libraryName: String, val database: Gra
      * @return child with index
      *
      * */
-    private fun findChildNodeByIndex(parent : NodePresentation, index : Long) : NodePresentation?{
+    private fun findChildNodeByIndex(parent : Node, index : Long) : Node?{
         return if (parent.nodeInfo.nodeIndex==index){
             parent
         } else{
@@ -61,19 +61,19 @@ class TreeManager private constructor(val libraryName: String, val database: Gra
     }
 
 
-    suspend fun getRootNode(): NodePresentation?  = rootNode
+    suspend fun getRootNode(): Node?  = rootNode
 
 
 
     /**
      * Init node presentation and all childs
-     * Create node and after call [NodePresentation.updateParentNode] for setup true parent
+     * Create node and after call [Node.updateParentNode] for setup true parent
      * It is cyclic dependency with every node and their childs
      * */
-    private suspend fun initNodePresentation(libNode: LibNode, parentNode : NodePresentation?): NodePresentation {
+    private suspend fun initNodePresentation(libNode: LibNode, parentNode : Node?): Node {
         val rootPosition = database.nodePosition().getNodeByIndex(libNode.nodeIndex)
         val rootUiProperty = database.nodeViewProperty().getByIndex(libNode.nodeIndex)
-        var childsList = mutableListOf<NodePresentation>()
+        var childsList = mutableListOf<Node>()
         libNode.childs.childs.forEach {
             val dbNodeInfo = database.libNodeDao().getNodeByIndex(it)
             if (dbNodeInfo!=null){
@@ -81,7 +81,7 @@ class TreeManager private constructor(val libraryName: String, val database: Gra
             }
         }
         //create node
-        val node = NodePresentation.Builder(libNode)
+        val node = Node.Builder(libNode)
             .setNodePosition(rootPosition)
             .setNodeViewProperty(rootUiProperty)
             .setParentNode(parentNode)

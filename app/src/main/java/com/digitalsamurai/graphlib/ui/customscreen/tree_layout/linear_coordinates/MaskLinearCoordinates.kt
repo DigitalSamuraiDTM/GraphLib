@@ -1,4 +1,4 @@
-package com.digitalsamurai.graphlib.ui.customscreen.linear_coordinates
+package com.digitalsamurai.graphlib.ui.customscreen.tree_layout.linear_coordinates
 
 import android.graphics.Paint
 import android.graphics.Point

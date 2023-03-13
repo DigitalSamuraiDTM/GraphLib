@@ -1,16 +1,14 @@
 package com.digitalsamurai.graphlib.database.room.nodes
 
-import androidx.room.Embedded
-import androidx.room.Relation
 import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 import com.digitalsamurai.graphlib.database.room.nodes.position.NodePosition
 import com.digitalsamurai.graphlib.database.room.nodes.properties.NodeViewProperty
 
 /**
- * [NodePresentation] provide all general data about node in presentation layer.
+ * [Node] provide all general data about node in presentation layer.
  * Presentation layer expand this class the composable function for drawing in Compose layout
  * */
-data class NodePresentation(
+data class Node(
 
     var nodeInfo : LibNode,
 
@@ -18,17 +16,17 @@ data class NodePresentation(
 
     var nodeViewProperty: NodeViewProperty = defaultNodeViewProperty(nodeInfo.nodeIndex),
 
-    var childs : List<NodePresentation> = emptyList(),
+    var childs : List<Node> = emptyList(),
 
     //null when node is root node
-    var parentNode : NodePresentation? = null
+    var parentNode : Node? = null
 )  {
 
 
     /**
      * Function need for updating parent node when we finally create parent node and we can set parent node
      */
-    fun updateParentNode(parentNode: NodePresentation){
+    fun updateParentNode(parentNode: Node){
         this.parentNode = parentNode
     }
 
@@ -41,8 +39,8 @@ data class NodePresentation(
 
         private var nodePosition = defaultNodePosition(nodeInfo.nodeIndex)
         private var nodeViewProperty = defaultNodeViewProperty(nodeInfo.nodeIndex)
-        private var childs : List<NodePresentation> = emptyList()
-        private var parentNode : NodePresentation? = null
+        private var childs : List<Node> = emptyList()
+        private var parentNode : Node? = null
 
         fun setNodePosition(nodePosition: NodePosition?) : Builder {
             nodePosition?.let {
@@ -57,19 +55,19 @@ data class NodePresentation(
             return this
         }
 
-        fun setChilds(childs : List<NodePresentation>?) : Builder{
+        fun setChilds(childs : List<Node>?) : Builder{
             childs?.let {
                 this.childs = childs
             }
             return this
         }
-        fun setParentNode(parentNode: NodePresentation?) : Builder{
+        fun setParentNode(parentNode: Node?) : Builder{
             this.parentNode = parentNode
             return this
         }
 
-        fun build() : NodePresentation{
-            return NodePresentation(nodeInfo,nodePosition,nodeViewProperty, childs,parentNode)
+        fun build() : Node{
+            return Node(nodeInfo,nodePosition,nodeViewProperty, childs,parentNode)
         }
     }
 }

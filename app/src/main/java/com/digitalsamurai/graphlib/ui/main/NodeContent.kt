@@ -14,30 +14,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.digitalsamurai.graphlib.database.room.nodes.NodePresentation
-import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
-import com.digitalsamurai.graphlib.database.room.nodes.node.entity.ChildNodes
 import com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator.position
-import com.digitalsamurai.graphlib.ui.main.vm.NodePresentationViewModel
+import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.node.ItemTreeNode
+import com.digitalsamurai.graphlib.ui.main.vm.NodeViewModel
 
 
 @Composable
-fun NodePresentation.view(viewModel: NodePresentationViewModel) {
+fun NodeView(data : ItemTreeNode.TreeNodeData, viewModel: NodeViewModel) {
     Button(
-        onClick = { viewModel.clickEvent(this) },
+        onClick = { viewModel.clickEvent(data.nodeIndex) },
         modifier = Modifier
-            .width(this.nodeViewProperty.width.dp)
-            .height(this.nodeViewProperty.height.dp)
-            .position(this.nodePosition.xPosition, this.nodePosition.yPosition),
+            .width(data.preferences.width.dp)
+            .height(data.preferences.height.dp)
+            .position(data.preferences.x, data.preferences.y),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
     ) {
         Text(
-            text = this@view.nodeInfo.title,
+            text = data.title,
             textAlign = TextAlign.Center,
             color = Color.White
         )
 
     }
+
 }
 
 
@@ -45,17 +44,17 @@ fun NodePresentation.view(viewModel: NodePresentationViewModel) {
 @Preview
 fun previewNodePresentation() {
 
-    val mockViewModel = object : NodePresentationViewModel {
-        override fun clickEvent(nodePresentation: NodePresentation) {
+    val mockViewModel = object : NodeViewModel {
+        override fun clickEvent(node: Long) {
 
         }
     }
-    val testNode = LibNode("test", "It is a title", 0, ChildNodes(), 0)
+    val nodeData  =ItemTreeNode.TreeNodeData("title",0,ItemTreeNode.TreeNodePreferences(0,0,200,200))
     Box(
         Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        NodePresentation(testNode).view(mockViewModel)
+        NodeView(nodeData,mockViewModel)
     }
 }
