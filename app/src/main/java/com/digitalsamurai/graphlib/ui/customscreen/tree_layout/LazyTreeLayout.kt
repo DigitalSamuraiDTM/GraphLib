@@ -9,15 +9,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.digitalsamurai.graphlib.extensions.toPx
-import com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator.ViewPosition
 import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.*
+import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.modifier.drawLinearCoordinates
+import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.modifier.treeLayoutPointerInput
 import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.main.vm.NodeViewModel
 
@@ -30,16 +32,24 @@ fun LazyTreeLayout(modifier: Modifier,
     var defaultBoxSize = 500
     defaultBoxSize = defaultBoxSize.dp.toPx().toInt()
 
-
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp.toPx()
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp.toPx()
     //запомним провайдер, который поставляем нам наши элементы
     val provider = rememberTreeLayoutItemProvider(content)
 
     Log.d("TREE",state.offsetState.value.x.toString()+":"+state.offsetState.value.y.toString())
 
+    var w : Float? = null
+    var h : Float? = null
     LazyLayout(
         modifier = modifier
             .clipToBounds()
-            .treeLayoutPointerInput(state),
+            .onGloballyPositioned { layoutCoordinates ->
+                w = layoutCoordinates.parentLayoutCoordinates?.size?.toSize()?.width
+                h = layoutCoordinates.parentLayoutCoordinates?.size?.toSize()?.height
+            }
+            .treeLayoutPointerInput(state)
+            .drawLinearCoordinates(state, screenWidth, screenHeight),
         itemProvider = provider) { constraints ->
 
         //получаем границы части слоя, на котором находится экран на основе constraint
@@ -89,9 +99,9 @@ fun previewTreeLayout() {
         }
     }
     val list = listOf(
-        ItemTreeNode.TreeNodeData("title",0,ItemTreeNode.TreeNodePreferences(0,0,200,200)),
-        ItemTreeNode.TreeNodeData("title2",1,ItemTreeNode.TreeNodePreferences(300,600,200,200)),
-        ItemTreeNode.TreeNodeData("title3",1,ItemTreeNode.TreeNodePreferences(1300,1300,200,200))
+        ItemTreeNode.TreeNodeData("title",0,ItemTreeNode.TreeNodePreferences(0,0,100,100)),
+        ItemTreeNode.TreeNodeData("title2",1,ItemTreeNode.TreeNodePreferences(300,600,100,100)),
+        ItemTreeNode.TreeNodeData("title3",1,ItemTreeNode.TreeNodePreferences(1300,1300,100,100))
         )
     val layoutState = rememberTreeLayoutState()
     Box(modifier = Modifier.background(Color.White)) {
