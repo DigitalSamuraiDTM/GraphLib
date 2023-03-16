@@ -17,25 +17,26 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.digitalsamurai.graphlib.extensions.toPx
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.TreeLayoutScope
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.TreeLayoutState
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.modifier.drawLinearCoordinates
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.modifier.treeLayoutPointerInput
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.node.ItemTreeNode
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.rememberTreeLayoutItemProvider
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.rememberTreeLayoutState
+import com.digitalsamurai.graphlib.ui.custom.modifier.LongClickEvent
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.TreeLayoutScope
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.TreeLayoutState
+import com.digitalsamurai.graphlib.ui.custom.modifier.drawLinearCoordinates
+import com.digitalsamurai.graphlib.ui.custom.modifier.longClickable
+import com.digitalsamurai.graphlib.ui.custom.modifier.treeLayoutPointerInput
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.rememberTreeLayoutItemProvider
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.rememberTreeLayoutState
 import com.digitalsamurai.graphlib.ui.main.vm.NodeViewModel
 
 @Composable
 fun LazyTreeLayout(
     modifier: Modifier,
     state: TreeLayoutState = rememberTreeLayoutState(),
+    longClickEvent: LongClickEvent? = null,
     content: TreeLayoutScope.() -> Unit
 ) {
 
-    //определяем дефолтный размер матрицы
-    var defaultBoxSize = 500
-    defaultBoxSize = defaultBoxSize.dp.toPx().toInt()
+
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp.toPx()
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp.toPx()
@@ -44,16 +45,11 @@ fun LazyTreeLayout(
 
     Log.d("TREE", state.offsetState.value.x.toString() + ":" + state.offsetState.value.y.toString())
 
-    var w: Float? = null
-    var h: Float? = null
+
     LazyLayout(
         modifier = modifier
             .clipToBounds()
-            .onGloballyPositioned { layoutCoordinates ->
-                w = layoutCoordinates.parentLayoutCoordinates?.size?.toSize()?.width
-                h = layoutCoordinates.parentLayoutCoordinates?.size?.toSize()?.height
-            }
-            .treeLayoutPointerInput(state)
+            .treeLayoutPointerInput(state,longClickEvent)
             .drawLinearCoordinates(state, screenWidth, screenHeight),
         itemProvider = provider) { constraints ->
 
@@ -123,7 +119,7 @@ fun previewTreeLayout() {
     val list = listOf(
         ItemTreeNode.TreeNodeData("title", 0, ItemTreeNode.TreeNodePreferences(0, 0, 200, 200)),
         ItemTreeNode.TreeNodeData(
-            "title2",
+            "title2 title2 title2 title2 title2 title2 title2 title2 title2",
             1,
             ItemTreeNode.TreeNodePreferences(400, 600, 400, 200)
         ),
@@ -131,6 +127,11 @@ fun previewTreeLayout() {
             "title3",
             1,
             ItemTreeNode.TreeNodePreferences(1300, 1300, 100, 100)
+        ),
+        ItemTreeNode.TreeNodeData(
+            "title4",
+            1,
+            ItemTreeNode.TreeNodePreferences(-300, -200, 100, 100)
         )
     )
     val layoutState = rememberTreeLayoutState()

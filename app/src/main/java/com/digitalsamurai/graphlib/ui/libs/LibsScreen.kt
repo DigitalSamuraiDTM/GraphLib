@@ -22,12 +22,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.digitalsamurai.graphlib.database.room.libs.Lib
-import com.digitalsamurai.graphlib.theme.MainTheme
 import com.digitalsamurai.graphlib.ui.libs.item.LibraryItem
 import com.digitalsamurai.graphlib.ui.navigation.Screen
-import com.digitalsamurai.graphlib.ui.start.vm.StartScreenViewModel
-import kotlinx.coroutines.flow.collect
-import java.time.LocalDateTime
 
 @Composable
 fun LibsScreen(navController: NavController){

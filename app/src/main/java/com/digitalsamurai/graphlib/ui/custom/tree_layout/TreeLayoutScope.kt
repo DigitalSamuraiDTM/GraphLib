@@ -1,7 +1,7 @@
-package com.digitalsamurai.graphlib.ui.customscreen.tree_layout
+package com.digitalsamurai.graphlib.ui.custom.tree_layout
 
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.node.ItemTreeNode
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.node.TreeNodeContent
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.TreeNodeContent
 
 interface  TreeLayoutScope {
 

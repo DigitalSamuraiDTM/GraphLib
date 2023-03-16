@@ -1,4 +1,4 @@
-package com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator
+package com.digitalsamurai.graphlib.ui.custom.bottom_navigator
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ParentDataModifier

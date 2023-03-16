@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator.position
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.node.ItemTreeNode
+import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.position
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.main.vm.NodeViewModel
 
 

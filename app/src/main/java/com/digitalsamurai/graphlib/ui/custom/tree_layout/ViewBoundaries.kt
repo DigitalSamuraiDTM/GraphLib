@@ -1,4 +1,4 @@
-package com.digitalsamurai.graphlib.ui.customscreen.tree_layout
+package com.digitalsamurai.graphlib.ui.custom.tree_layout
 
 
 data class ViewBoundaries(

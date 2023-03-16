@@ -1,14 +1,14 @@
 package com.digitalsamurai.graphlib.ui.main.vm
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.layout.Layout
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.preferences.GraphPreferences
 import com.digitalsamurai.graphlib.database.tree.TreeManager
+import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorState
+import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,7 +36,26 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     }
 
 
+    //MAIN VIEWMODEL UI
 
+
+    private val _focusedElement = mutableStateOf<Long?>(null)
+    override val focusedElement: State<Long?>
+        get() = _focusedElement
+
+
+
+    private val _isFullScreen = mutableStateOf(false)
+    override val isFullScreen: State<Boolean>
+        get() = _isFullScreen
+
+    override fun updateFullScreenState(isFullScreen: Boolean?) {
+        isFullScreen?.let {
+            _isFullScreen.value = it
+            return
+        }
+        _isFullScreen.value = !_isFullScreen.value
+    }
 
     fun initData(libName : String?){
         viewModelScope.launch {
@@ -60,31 +79,14 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     }
 
 
+    //BOTTOM NAVIGATOR
 
+    override fun bottomNavigatorClicked(element: BottomNavigatorUi) {
+        TODO("Not yet implemented")
+    }
+
+    override val navigatorState: State<BottomNavigatorState>
+        get() = TODO("Not yet implemented")
 }
 
 
-
-@Composable
-fun ReverseFlowRow(
-    content: @Composable () -> Unit
-) = Layout(content) { measurables, constraints ->
-    // measuring children, layout sizing, and placing children takes place here.
-
-    // 1. The measuring phase.
-    val placeables = measurables.map { measurable ->
-        measurable.measure(constraints)
-    }
-
-    // 2. The sizing phase.
-    layout(constraints.maxWidth, constraints.maxHeight) {
-        // 3. The placement phase.
-        var yPosition = 0
-        var xPosition = constraints.maxWidth
-
-        placeables.forEach { placeable ->
-            //fak
-        }
-    }
-
-}

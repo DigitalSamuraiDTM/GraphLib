@@ -1,4 +1,4 @@
-package com.digitalsamurai.graphlib.ui.customscreen.tree_layout.modifier
+package com.digitalsamurai.graphlib.ui.custom.modifier
 
 import android.graphics.Paint
 import android.graphics.Rect
@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.TreeLayoutState
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.TreeLayoutState
 
 //todo update custom painters
 fun Modifier.drawLinearCoordinates(

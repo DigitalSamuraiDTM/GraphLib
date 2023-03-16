@@ -1,7 +1,6 @@
-package com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator
+package com.digitalsamurai.graphlib.ui.custom.bottom_navigator
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,8 +15,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.digitalsamurai.graphlib.R
-import com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator.entity.BottomNavigatorState
-import com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator.entity.BottomNavigatorUi
+import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorState
+import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorUi
 
 
 @Composable
@@ -26,15 +25,11 @@ fun BottomNavigator(
     viewModel: BottomNavigatorViewModel,
     modifier: Modifier = Modifier
 ) {
-
-
         val value = viewModel.navigatorState.value
-
 
     //сравниваем состояния
         Row(
             modifier = modifier
-                .background(Color.White)
                 .fillMaxWidth()
                 .height(50.dp),
             horizontalArrangement = Arrangement.Center,

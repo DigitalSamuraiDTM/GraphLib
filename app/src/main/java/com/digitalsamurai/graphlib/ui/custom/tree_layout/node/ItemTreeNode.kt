@@ -1,4 +1,4 @@
-package com.digitalsamurai.graphlib.ui.customscreen.tree_layout.node
+package com.digitalsamurai.graphlib.ui.custom.tree_layout.node
 
 import androidx.compose.runtime.Composable
 

@@ -1,9 +1,9 @@
-package com.digitalsamurai.graphlib.ui.customscreen.tree_layout
+package com.digitalsamurai.graphlib.ui.custom.tree_layout
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.layout.LazyLayoutItemProvider
 import androidx.compose.runtime.*
-import com.digitalsamurai.graphlib.ui.customscreen.tree_layout.node.ItemTreeNode
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 
 @Composable
 fun rememberTreeLayoutItemProvider(scope: TreeLayoutScope.() -> Unit): TreeLayoutItemProvider {

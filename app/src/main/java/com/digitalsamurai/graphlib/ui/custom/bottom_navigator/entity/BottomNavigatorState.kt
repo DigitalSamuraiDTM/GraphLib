@@ -1,4 +1,4 @@
-package com.digitalsamurai.graphlib.ui.customscreen.bottom_navigator.entity
+package com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity
 
 class BottomNavigatorState(val prevoius : BottomNavigatorUi?,
                            val current : BottomNavigatorUi,

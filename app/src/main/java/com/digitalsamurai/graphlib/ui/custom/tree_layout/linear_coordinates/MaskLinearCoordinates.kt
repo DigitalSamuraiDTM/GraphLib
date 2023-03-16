@@ -1,18 +1,15 @@
-package com.digitalsamurai.graphlib.ui.customscreen.tree_layout.linear_coordinates
+package com.digitalsamurai.graphlib.ui.custom.tree_layout.linear_coordinates
 
 import android.graphics.Paint
-import android.graphics.Point
 import android.graphics.PointF
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.toSize
 
 //todo кастомизация масок (цвет, размер, шаг сетки)
