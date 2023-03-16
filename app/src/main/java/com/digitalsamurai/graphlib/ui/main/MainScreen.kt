@@ -4,23 +4,19 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,8 +27,11 @@ import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.BottomNavigator
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorState
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorUi
 import com.digitalsamurai.graphlib.ui.custom.modifier.LongClickEvent
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.main.vm.MainViewModel
 import com.digitalsamurai.graphlib.ui.main.vm.MainViewModelUI
+import com.digitalsamurai.graphlib.ui.navigation.Screen
+import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreen(navController: NavController, libName: String?) {
@@ -46,6 +45,7 @@ fun MainScreen(navController: NavController, libName: String?) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Content(navController: NavController, viewModelUI: MainViewModelUI) {
 
@@ -53,6 +53,10 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
         targetState = viewModelUI.isFullScreen,
         label = "LazyTreeFullScreen"
     )
+
+    val haptic = LocalHapticFeedback.current
+
+    val nodesList = viewModelUI.nodes
 
     GraphlibTheme() {
 
@@ -62,6 +66,8 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
                 .fillMaxSize()
                 .background(Color.White)
         ) {
+
+
             AnimatedVisibility(
                 visible = !viewModelUI.isFullScreen.value,
                 enter = slideInVertically(animationSpec = tween(250)),
@@ -72,7 +78,7 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
             ) {
 
                 TopAppBar() {
-                    Text(text = "${viewModelUI.library.value}")
+                    Text(text = viewModelUI.library.value)
                 }
             }
 
@@ -93,32 +99,45 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
             LazyTreeLayout(
                 modifier = Modifier
                     .padding(0.dp, lazyTreePadding.value, 0.dp, 0.dp),
-                longClickEvent = LongClickEvent(500) {
+                longClickEvent = LongClickEvent(500L) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     viewModelUI.updateFullScreenState()
                 }
             )
             {
-                this.items(emptyList()) {
-
+                this.items(nodesList) {
+                    NodeView(data = it, viewModel = viewModelUI)
                 }
             }
-            AnimatedVisibility(
-                visible = (!viewModelUI.isFullScreen.value && viewModelUI.focusedElement.value != null),
-                enter = slideInVertically(animationSpec = tween(250)){ it },
-                exit =  slideOutVertically(animationSpec = tween(250)){ it },
-                modifier = Modifier.align(Alignment.BottomCenter)
-            ) {
 
-
-                BottomNavigator(
-                    viewModel = viewModelUI,
+            //кнопка всегда, если нет нод, иначе навигатор по ситуации
+            if (nodesList.isEmpty()) {
+                Button(
+                    onClick = {
+                        navController.navigate(Screen.CreateNode.route)},
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
                     modifier = Modifier
-
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
                         .padding(10.dp, 0.dp, 10.dp, 10.dp)
-                        .shadow(10.dp)
-                        .background(Color.White)
-
-                )
+                ) {
+                    Text(text = "Create your first node", color = Color.Black)
+                }
+            } else {
+                AnimatedVisibility(
+                    visible = (!viewModelUI.isFullScreen.value && viewModelUI.focusedElement.value != null),
+                    enter = slideInVertically(animationSpec = tween(250)) { it },
+                    exit = slideOutVertically(animationSpec = tween(250)) { it },
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                ) {
+                    BottomNavigator(
+                        viewModel = viewModelUI,
+                        modifier = Modifier
+                            .padding(10.dp, 0.dp, 10.dp, 10.dp)
+                            .shadow(10.dp)
+                            .background(Color.White)
+                    )
+                }
             }
 
 
@@ -140,8 +159,14 @@ private val mockViewModel = object : MainViewModelUI {
     override val library: State<String>
         get() = mutableStateOf("Obama")
 
+    override fun clickEvent(nodeIndex: Long) {
+        TODO("Not yet implemented")
+    }
 
-    private val _f = mutableStateOf(0L)
+    private val _nodes = mutableStateListOf<ItemTreeNode.TreeNodeData>()
+    override val nodes: List<ItemTreeNode.TreeNodeData>
+        get() = _nodes
+    private val _f = mutableStateOf(null)
     override val focusedElement: State<Long?>
         get() = _f
     private val _i = mutableStateOf(false)

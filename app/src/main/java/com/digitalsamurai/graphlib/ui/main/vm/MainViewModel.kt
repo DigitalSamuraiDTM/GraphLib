@@ -1,14 +1,18 @@
 package com.digitalsamurai.graphlib.ui.main.vm
 
+import android.view.MotionEvent
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.preferences.GraphPreferences
 import com.digitalsamurai.graphlib.database.tree.TreeManager
+import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.BottomNavigatorViewModel
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorState
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorUi
+import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,7 +40,16 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     }
 
 
-    //MAIN VIEWMODEL UI
+
+    /**
+     * ----------------------[MainViewModelUI]---------------------
+     * */
+
+
+    private val _nodes = mutableStateListOf<ItemTreeNode.TreeNodeData>()
+    override val nodes: List<ItemTreeNode.TreeNodeData>
+        get() = _nodes
+
 
 
     private val _focusedElement = mutableStateOf<Long?>(null)
@@ -78,12 +91,25 @@ class MainViewModel : ViewModel(), MainViewModelUI {
         }
     }
 
+    /**
+     * ----------------------[NodeViewModel]---------------------
+     * */
 
-    //BOTTOM NAVIGATOR
+    override fun clickEvent(nodeIndex: Long) {
+        TODO("Not yet implemented")
+    }
+
+
+
+    /**
+     * ----------------------[BottomNavigatorViewModel]---------------------
+     * */
 
     override fun bottomNavigatorClicked(element: BottomNavigatorUi) {
         TODO("Not yet implemented")
     }
+
+
 
     override val navigatorState: State<BottomNavigatorState>
         get() = TODO("Not yet implemented")

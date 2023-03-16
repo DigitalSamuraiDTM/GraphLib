@@ -5,4 +5,5 @@ sealed class Screen(val route : String) {
     object Libs : Screen("libs_screen")
     object Main : Screen("main_screen")
     object CreateNew : Screen("create_new")
+    object CreateNode : Screen("create_node")
 }
