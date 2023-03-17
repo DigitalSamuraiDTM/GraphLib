@@ -23,7 +23,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.digitalsamurai.graphlib.database.room.libs.Lib
 import com.digitalsamurai.graphlib.ui.libs.item.LibraryItem
+import com.digitalsamurai.graphlib.ui.libs.vm.LibsScreenViewModelUI
 import com.digitalsamurai.graphlib.ui.navigation.Screen
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun LibsScreen(navController: NavController){
@@ -31,7 +33,7 @@ fun LibsScreen(navController: NavController){
 
         val libsState = viewModel.libsState.collectAsState(emptyList()).value
 
-        LibsScreenContent(navController = navController, libsState = libsState)
+        LibsScreenContent(navController = navController, viewModel = viewModel)
 
 
 
@@ -39,7 +41,9 @@ fun LibsScreen(navController: NavController){
 
 @Composable
 private fun LibsScreenContent(navController: NavController,
-                    libsState : List<Lib>){
+                    viewModel : LibsScreenViewModelUI
+){
+    val libsState = viewModel.libsState.collectAsState(emptyList()).value
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +90,8 @@ private fun LibsScreenContent(navController: NavController,
                             LibraryItem(
                                 lib = it,
                                 modifier = Modifier.clickable(enabled = true) {
-                                    navController.navigate(Screen.Main.route + "/" + it.libName){
+                                    viewModel.selectLib(it.libName)
+                                    navController.navigate(Screen.Main.route){
                                         this.popUpTo(0)
                                     }
                                 })
@@ -112,6 +117,12 @@ private fun LibsScreenContent(navController: NavController,
 @Composable
 @Preview
 fun previewLibsScreen(){
-//    LibsScreenContent(rememberNavController(), listOf(Lib("Test", LocalDateTime.now())))
-    LibsScreenContent(rememberNavController(), emptyList())
+    LibsScreenContent(rememberNavController(),object : LibsScreenViewModelUI{
+        override val libsState: Flow<List<Lib>>
+            get() = TODO("Not yet implemented")
+
+        override fun selectLib(libName: String) {
+            TODO("Not yet implemented")
+        }
+    })
 }

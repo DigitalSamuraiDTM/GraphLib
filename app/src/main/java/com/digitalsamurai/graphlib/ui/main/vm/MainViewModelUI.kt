@@ -2,17 +2,20 @@ package com.digitalsamurai.graphlib.ui.main.vm
 
 import android.view.MotionEvent
 import androidx.compose.runtime.State
+import com.digitalsamurai.graphlib.ui.createnode.vm.CreateNodeViewModelUI
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.BottomNavigatorViewModel
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
+import com.digitalsamurai.graphlib.ui.main.MainScreenState
 
 interface MainViewModelUI : BottomNavigatorViewModel, NodeViewModel {
 
     val library : State<String>
 
     fun updateFullScreenState(isFullScreen : Boolean? = null)
+    fun clickBottomButton()
 
     val isFullScreen : State<Boolean>
-    val focusedElement : State<Long?>
+    val state : State<MainScreenState>
     val nodes : List<ItemTreeNode.TreeNodeData>
 
 }

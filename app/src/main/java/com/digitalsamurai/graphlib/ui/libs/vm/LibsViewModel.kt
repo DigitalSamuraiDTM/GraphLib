@@ -1,33 +1,31 @@
 package com.digitalsamurai.graphlib.ui.libs
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.GraphLibApp
+import com.digitalsamurai.graphlib.database.preferences.GraphPreferences
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.database.room.libs.Lib
+import com.digitalsamurai.graphlib.ui.libs.vm.LibsScreenViewModelUI
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
-class LibsScreenViewModel : ViewModel() {
+class LibsScreenViewModel : ViewModel(), LibsScreenViewModelUI {
 
     @Inject
     lateinit var database: GraphDatabase
 
+    @Inject
+    lateinit var pref : GraphPreferences
 
-   val libsState : Flow<List<Lib>>
+    override val libsState: Flow<List<Lib>>
 
     init {
 
     }
-    fun initLibsViewModel(){
-    }
+
 
     init {
         GraphLibApp.appComponent.injectLibsViewModel(this)
@@ -35,10 +33,15 @@ class LibsScreenViewModel : ViewModel() {
         libsState = database.libDao().observeAll()
     }
 
-    private var selectedLibJob : Job? = null
+
+    override fun selectLib(libName: String) {
+        pref.lastOpenedGraph = libName
+    }
+
+    private var selectedLibJob: Job? = null
 
 
-    fun getAll(){
+    fun getAll() {
 
     }
 }

@@ -13,25 +13,37 @@ import com.digitalsamurai.graphlib.ui.main.MainScreen
 import com.digitalsamurai.graphlib.ui.start.StartScreen
 
 @Composable
-fun Navigation(){
+fun Navigation(lastGraph: String?) {
+
+    val start = if (lastGraph == null) {
+        Screen.Start.route
+    } else {
+        Screen.Main.route
+    }
+
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.Start.route){
-        composable(route=Screen.Start.route){
+    NavHost(navController = navController, startDestination = start) {
+        composable(route = Screen.Start.route) {
             StartScreen(navController = navController)
         }
-        composable(route = Screen.CreateNew.route){
+        composable(route = Screen.Libs.route) {
+            LibsScreen(navController = navController)
+        }
+        composable(route = Screen.CreateNew.route) {
             CreateNewScreen(navController)
         }
-        composable(route = (Screen.Main.route+"/{lib_name}"), arguments = listOf(
-            navArgument("lib_name"){
+        composable(route = Screen.Main.route){
+            MainScreen(navController = navController)
+        }
+
+        composable(
+            route = Screen.CreateNode.route + "/{lib_name}",
+            arguments = listOf(navArgument("lib_name"){
                 this.type = NavType.StringType
                 this.nullable = false
-            }
-        )){entry->
-            MainScreen(navController = navController, libName =  entry.arguments?.getString("lib_name"))
-        }
-        composable(route = Screen.Libs.route){
-            LibsScreen(navController)
+            })
+        ) {entry->
+            CreateNodeScreen(navController, libraryName = entry.arguments?.getString("lib_name")!!)
         }
 //        composable(route = Screen.CreateNode.route){
 //            CreateNodeScreen(navController = navController)

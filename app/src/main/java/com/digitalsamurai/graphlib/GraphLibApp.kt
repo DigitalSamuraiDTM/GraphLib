@@ -23,13 +23,14 @@ class GraphLibApp: Application() {
         get() {
             return DaggerAppComponent.builder().appModule(AppModule(this.applicationContext)).build()
         }
-        val startComponent : MainComponent
-        get() {
-            return appComponent.mainComponent(MainModule())
-        }
-        val mainComponent : MainComponent
-        get() {
-            return appComponent.mainComponent(MainModule())
+
+        private var mainComponent : MainComponent? = null
+
+        fun getMainComponent() : MainComponent{
+            if (mainComponent==null){
+                mainComponent = appComponent.mainComponent(MainModule())
+            }
+            return mainComponent!!
         }
 
     }

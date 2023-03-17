@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.GraphLibApp
+import com.digitalsamurai.graphlib.database.preferences.GraphPreferences
 import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.database.room.libs.Lib
 import com.digitalsamurai.graphlib.database.tree.TreeManager
@@ -24,6 +25,8 @@ class CreateLibViewModel : ViewModel() {
     @Inject
     lateinit var database : GraphDatabase
 
+    @Inject
+    lateinit var pref : GraphPreferences
 
     private var _enteredName = mutableStateOf<EnteredNameState>(EnteredNameState.NameNothing(""))
     val enteredName : State<EnteredNameState>
@@ -68,6 +71,7 @@ class CreateLibViewModel : ViewModel() {
             val liba = database.libDao().findLibByName(enteredText)
             if (liba.isEmpty()){
                 database.libDao().insertLib(Lib(enteredText, LocalDateTime.now()))
+                pref.lastOpenedGraph = enteredText
                 _createLibFlow.emit(enteredText)
             } else{
                 _createLibFlow.emit(null)

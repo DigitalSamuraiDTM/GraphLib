@@ -42,7 +42,9 @@ fun CreateNewScreen(navController: NavController){
             LaunchedEffect(key1 = Unit, block = {
                 viewModel.createLibFlow.collect{
                     if (it!=null){
-                        navController.navigate(Screen.Main.route+"/${it}")
+                        navController.navigate(Screen.Main.route){
+                            this.popUpTo(0)
+                        }
                     } else{
                         Toast.makeText(context,"Library is exist",Toast.LENGTH_SHORT).show()
                     }

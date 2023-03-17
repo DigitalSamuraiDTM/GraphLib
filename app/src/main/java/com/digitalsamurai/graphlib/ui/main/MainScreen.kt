@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.digitalsamurai.graphlib.theme.GraphlibTheme
+import com.digitalsamurai.graphlib.ui.createnode.CreateNodeScreen
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.BottomNavigator
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorState
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorUi
@@ -31,21 +32,19 @@ import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.main.vm.MainViewModel
 import com.digitalsamurai.graphlib.ui.main.vm.MainViewModelUI
 import com.digitalsamurai.graphlib.ui.navigation.Screen
-import kotlinx.coroutines.delay
 
 @Composable
-fun MainScreen(navController: NavController, libName: String?) {
+fun MainScreen(navController: NavController) {
 
     val viewModel: MainViewModel = viewModel()
 
-    viewModel.initData(libName)
+    viewModel.initData()
 
-    libName?.let {
+    viewModel.library.value.let {
         Content(navController = navController, viewModel)
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Content(navController: NavController, viewModelUI: MainViewModelUI) {
 
@@ -58,7 +57,16 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
 
     val nodesList = viewModelUI.nodes
 
+    val focusedElement = if (viewModelUI.state.value is MainScreenState.Main){
+        (viewModelUI.state.value as MainScreenState.Main).focusedElement
+    } else{
+        null
+    }
+
+
+
     GraphlibTheme() {
+
 
 
         Box(
@@ -111,10 +119,12 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
             }
 
             //кнопка всегда, если нет нод, иначе навигатор по ситуации
-            if (nodesList.isEmpty()) {
+            if (nodesList.isEmpty() && viewModelUI.state.value is MainScreenState.Main) {
                 Button(
                     onClick = {
-                        navController.navigate(Screen.CreateNode.route)},
+                        navController.navigate(Screen.CreateNode.route+"/${viewModelUI.library.value}")
+                        viewModelUI.clickBottomButton()
+                              },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -125,7 +135,7 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
                 }
             } else {
                 AnimatedVisibility(
-                    visible = (!viewModelUI.isFullScreen.value && viewModelUI.focusedElement.value != null),
+                    visible = (!viewModelUI.isFullScreen.value && focusedElement != null),
                     enter = slideInVertically(animationSpec = tween(250)) { it },
                     exit = slideOutVertically(animationSpec = tween(250)) { it },
                     modifier = Modifier.align(Alignment.BottomCenter)
@@ -140,6 +150,11 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
                 }
             }
 
+//            val titleCondition = (viewModelUI.state.value is MainScreenState.NewNode &&
+//                    ((viewModelUI.state.value as MainScreenState.NewNode).title!=null))
+//            AnimatedVisibility(visible = titleCondition) {
+//                CreateNodeScreen(navController = navController, viewModel = viewModelUI, libraryName = viewModelUI.library.value)
+//            }
 
         }
     }
@@ -156,6 +171,7 @@ fun preview() {
 
 //test mock
 private val mockViewModel = object : MainViewModelUI {
+
     override val library: State<String>
         get() = mutableStateOf("Obama")
 
@@ -166,12 +182,12 @@ private val mockViewModel = object : MainViewModelUI {
     private val _nodes = mutableStateListOf<ItemTreeNode.TreeNodeData>()
     override val nodes: List<ItemTreeNode.TreeNodeData>
         get() = _nodes
-    private val _f = mutableStateOf(null)
-    override val focusedElement: State<Long?>
-        get() = _f
+
     private val _i = mutableStateOf(false)
     override val isFullScreen: State<Boolean>
         get() = _i
+    override val state: State<MainScreenState>
+        get() = TODO("Not yet implemented")
 
     override fun updateFullScreenState(isFullScreen: Boolean?) {
         isFullScreen?.let {
@@ -180,6 +196,10 @@ private val mockViewModel = object : MainViewModelUI {
         }
         _i.value = !_i.value
 
+    }
+
+    override fun clickBottomButton() {
+        TODO("Not yet implemented")
     }
 
     override fun bottomNavigatorClicked(element: BottomNavigatorUi) {
