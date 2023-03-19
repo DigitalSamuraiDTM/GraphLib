@@ -8,6 +8,8 @@ import com.digitalsamurai.graphlib.database.room.GraphDatabase
 import com.digitalsamurai.graphlib.database.room.libs.Lib
 import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 import com.digitalsamurai.graphlib.database.room.nodes.node.entity.ChildNodes
+import com.digitalsamurai.graphlib.database.room.nodes.position.NodePosition
+import com.digitalsamurai.graphlib.database.room.nodes.properties.NodeViewProperty
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -82,6 +84,22 @@ class DatabaseTest {
         libDao.deleteLib(testLib)
 
         assert(true)
+
+    }
+
+    @Test
+    fun testInsertAllNodeDataAndDelete() = runBlocking{
+        db.libDao().insertLib(Lib("test", LocalDateTime.now()))
+        val libRoot = LibNode("test","Root",null, ChildNodes(),0)
+        val nodePosition = NodePosition(libRoot.nodeIndex,0,0)
+        val nodeView = NodeViewProperty(0,200,322)
+
+        val step1 = db.libNodeDao().insert(libRoot)
+        val step2 = db.nodePosition().insertNodePosition(nodePosition)
+        val step3 = db.nodeViewProperty().insert(nodeView)
+
+        //TODO завтра доделай тест и посмотри, всё ли добавляется и удаляется так, как надо. Если всё ок, то допиши TreeManager и сделай возможность добавлять ноды
+    // подумай как синхронизировать дерево в TreeManager, когда добавляешь/удаляешь/изменяешь ноды
 
     }
 

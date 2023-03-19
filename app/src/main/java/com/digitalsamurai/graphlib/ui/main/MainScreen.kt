@@ -8,12 +8,14 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -23,22 +25,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.digitalsamurai.graphlib.theme.GraphlibTheme
-import com.digitalsamurai.graphlib.ui.createnode.CreateNodeScreen
-import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.BottomNavigator
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorState
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavigatorUi
 import com.digitalsamurai.graphlib.ui.custom.modifier.LongClickEvent
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.main.vm.MainViewModel
 import com.digitalsamurai.graphlib.ui.main.vm.MainViewModelUI
-import com.digitalsamurai.graphlib.ui.navigation.Screen
 
 @Composable
 fun MainScreen(navController: NavController) {
 
     val viewModel: MainViewModel = viewModel()
 
-    viewModel.initData()
 
     viewModel.library.value.let {
         Content(navController = navController, viewModel)
@@ -55,18 +53,17 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
 
     val haptic = LocalHapticFeedback.current
 
-    val nodesList = viewModelUI.nodes
+    val nodesList = viewModelUI.state.value.nodeList
 
-    val focusedElement = if (viewModelUI.state.value is MainScreenState.Main){
+    val focusedElement = if (viewModelUI.state.value is MainScreenState.Main) {
         (viewModelUI.state.value as MainScreenState.Main).focusedElement
-    } else{
+    } else {
         null
     }
 
 
 
     GraphlibTheme() {
-
 
 
         Box(
@@ -118,43 +115,17 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
                 }
             }
 
-            //кнопка всегда, если нет нод, иначе навигатор по ситуации
-            if (nodesList.isEmpty() && viewModelUI.state.value is MainScreenState.Main) {
-                Button(
-                    onClick = {
-                        navController.navigate(Screen.CreateNode.route+"/${viewModelUI.library.value}")
-                        viewModelUI.clickBottomButton()
-                              },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                        .padding(10.dp, 0.dp, 10.dp, 10.dp)
-                ) {
-                    Text(text = "Create your first node", color = Color.Black)
-                }
-            } else {
-                AnimatedVisibility(
-                    visible = (!viewModelUI.isFullScreen.value && focusedElement != null),
-                    enter = slideInVertically(animationSpec = tween(250)) { it },
-                    exit = slideOutVertically(animationSpec = tween(250)) { it },
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ) {
-                    BottomNavigator(
-                        viewModel = viewModelUI,
-                        modifier = Modifier
-                            .padding(10.dp, 0.dp, 10.dp, 10.dp)
-                            .shadow(10.dp)
-                            .background(Color.White)
-                    )
-                }
+            //Bottom элементы, которые отображаются в зависимости от состояний
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(10.dp, 0.dp, 10.dp, 10.dp)
+            ) {
+                viewModelUI.state.value.View(viewModelUI = viewModelUI)
             }
 
-//            val titleCondition = (viewModelUI.state.value is MainScreenState.NewNode &&
-//                    ((viewModelUI.state.value as MainScreenState.NewNode).title!=null))
-//            AnimatedVisibility(visible = titleCondition) {
-//                CreateNodeScreen(navController = navController, viewModel = viewModelUI, libraryName = viewModelUI.library.value)
-//            }
 
         }
     }
@@ -180,8 +151,7 @@ private val mockViewModel = object : MainViewModelUI {
     }
 
     private val _nodes = mutableStateListOf<ItemTreeNode.TreeNodeData>()
-    override val nodes: List<ItemTreeNode.TreeNodeData>
-        get() = _nodes
+
 
     private val _i = mutableStateOf(false)
     override val isFullScreen: State<Boolean>
@@ -198,7 +168,7 @@ private val mockViewModel = object : MainViewModelUI {
 
     }
 
-    override fun clickBottomButton() {
+    override fun clickNavigationBottomButton() {
         TODO("Not yet implemented")
     }
 

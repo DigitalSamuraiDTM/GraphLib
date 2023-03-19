@@ -65,6 +65,8 @@ class TreeManager private constructor(val libraryName: String, val database: Gra
 
 
 
+
+
     /**
      * Init node presentation and all childs
      * Create node and after call [Node.updateParentNode] for setup true parent
@@ -91,6 +93,9 @@ class TreeManager private constructor(val libraryName: String, val database: Gra
         node.childs.forEach { it.updateParentNode(node) }
         return node
     }
+
+
+
 
 
     class Factory internal constructor(private val graphDatabase: GraphDatabase) {

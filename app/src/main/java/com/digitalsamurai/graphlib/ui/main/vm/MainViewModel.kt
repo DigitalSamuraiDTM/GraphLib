@@ -1,16 +1,15 @@
 package com.digitalsamurai.graphlib.ui.main.vm
 
-import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Update
 import com.digitalsamurai.graphlib.GraphLibApp
 import com.digitalsamurai.graphlib.database.preferences.GraphPreferences
 import com.digitalsamurai.graphlib.database.tree.TreeManager
 import com.digitalsamurai.graphlib.di.general.MainScope
+import com.digitalsamurai.graphlib.logic.createnode.NodeBuilder
+import com.digitalsamurai.graphlib.logic.mappers.toLazyTreeMutableList
 import com.digitalsamurai.graphlib.logic.mediator.NodeInfoMediator
 import com.digitalsamurai.graphlib.logic.mediator.NodeInfoMediatorGetter
 import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.BottomNavigatorViewModel
@@ -38,6 +37,14 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     lateinit var treeManagerFactory: TreeManager.Factory
     lateinit var treeManager: TreeManager
 
+
+    var nodeBuilder: NodeBuilder? = null
+
+    /**
+     * Хранит всё, что надо для отображения на [LazyTreeLayout]
+     * */
+    private var nodeDataList = mutableListOf<ItemTreeNode.TreeNodeData>()
+
     private var _library = mutableStateOf<String>("")
     override val library: State<String>
         get() = _library
@@ -55,6 +62,15 @@ class MainViewModel : ViewModel(), MainViewModelUI {
             viewModelScope.launch {
                 treeManager = treeManagerFactory.build(it)
                 initTree()
+                //инициализируем дерево из менеджера, кастуя к списку TreeNodeData для отображения на layout
+                nodeDataList = (treeManager.getRootNode()?.toLazyTreeMutableList() ?: mutableListOf())
+
+
+                //Переходим в состояние создание Root ноды
+                if (nodeDataList.isEmpty()){
+                    _state.value = MainScreenState.NewNode(nodeDataList,null,null,null)
+                }
+
             }
             //если ничего не помогло, то белый экран
         }
@@ -65,7 +81,7 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     private fun initNodeInfoListener(){
         nodeInfoMediatorGetter.setUpdateTitleListener(object : NodeInfoMediatorGetter.UpdateTitleListener{
             override fun onUpdate(title: String) {
-                Log.d("GRAPH", "TITLE IS: ${title}")
+                _state.value = MainScreenState.NewNode(emptyList(),title,null,null)
             }
         })
     }
@@ -79,28 +95,23 @@ class MainViewModel : ViewModel(), MainViewModelUI {
      * */
 
 
-    private val _state = mutableStateOf<MainScreenState>(MainScreenState.Main())
+    private val _state = mutableStateOf<MainScreenState>(MainScreenState.Main(emptyList(),null))
     override val state: State<MainScreenState>
         get() = _state
 
-    private val _nodes = mutableStateListOf<ItemTreeNode.TreeNodeData>()
-    override val nodes: List<ItemTreeNode.TreeNodeData>
-        get() = _nodes
+//    private val _nodes = mutableStateListOf<ItemTreeNode.TreeNodeData>()
+//    override val nodes: List<ItemTreeNode.TreeNodeData>
+//        get() = _nodes
 
     private val _isFullScreen = mutableStateOf(false)
     override val isFullScreen: State<Boolean>
         get() = _isFullScreen
 
 
-    override fun clickBottomButton() {
-        when (state.value) {
-            is MainScreenState.Main -> {
-                _state.value = MainScreenState.NewNode(null)
-            }
-            is MainScreenState.NewNode -> {
-                //TODO finish create
-            }
-        }
+    override fun clickNavigationBottomButton() {
+
+
+
     }
 
     override fun updateFullScreenState(isFullScreen: Boolean?) {
@@ -111,12 +122,7 @@ class MainViewModel : ViewModel(), MainViewModelUI {
         _isFullScreen.value = !_isFullScreen.value
     }
 
-    //Правильно ли, что при каждой рекомпозиции initData вызывается каждый раз и инициализация происходит каждый раз?
-    fun initData() {
 
-        val nodeName = nodeInfoMediatorGetter.title
-        val a = nodeName
-    }
 
     private fun initTree() {
 
