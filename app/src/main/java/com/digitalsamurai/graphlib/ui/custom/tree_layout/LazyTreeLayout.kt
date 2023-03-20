@@ -1,5 +1,6 @@
 package com.digitalsamurai.graphlib.ui.main
 
+import android.graphics.PointF
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,19 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Placeable
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import com.digitalsamurai.graphlib.extensions.toPx
 import com.digitalsamurai.graphlib.ui.custom.modifier.LongClickEvent
+import com.digitalsamurai.graphlib.ui.custom.modifier.drawLinearCoordinates
+import com.digitalsamurai.graphlib.ui.custom.modifier.treeLayoutPointerInput
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.TreeLayoutScope
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.TreeLayoutState
-import com.digitalsamurai.graphlib.ui.custom.modifier.drawLinearCoordinates
-import com.digitalsamurai.graphlib.ui.custom.modifier.longClickable
-import com.digitalsamurai.graphlib.ui.custom.modifier.treeLayoutPointerInput
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.rememberTreeLayoutItemProvider
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.rememberTreeLayoutState
@@ -33,9 +31,9 @@ fun LazyTreeLayout(
     modifier: Modifier,
     state: TreeLayoutState = rememberTreeLayoutState(),
     longClickEvent: LongClickEvent? = null,
+    clickEvent: ((PointF) -> Unit)? = null,
     content: TreeLayoutScope.() -> Unit
 ) {
-
 
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp.toPx()
@@ -49,9 +47,16 @@ fun LazyTreeLayout(
     LazyLayout(
         modifier = modifier
             .clipToBounds()
-            .treeLayoutPointerInput(state,longClickEvent)
+            .treeLayoutPointerInput(
+                state = state,
+                screenWidth = screenWidth,
+                screenHeight = screenHeight,
+                longClickEvent = longClickEvent,
+                clickEvent = clickEvent
+            )
             .drawLinearCoordinates(state, screenWidth, screenHeight),
-        itemProvider = provider) { constraints ->
+        itemProvider = provider
+    ) { constraints ->
 
         //получаем границы части слоя, на котором находится экран на основе constraint
         val boundaries = state.getBoundaries(constraints)
@@ -63,11 +68,14 @@ fun LazyTreeLayout(
 
         //мера каждого элемента для отображения
         val indexesWithPlaceable = indexes.associateWith {
-            measure(it, Constraints(
-                minWidth = provider.getItem(it)?.data?.preferences?.width ?: 100,
-                maxWidth = provider.getItem(it)?.data?.preferences?.width ?: 100,
-                minHeight = provider.getItem(it)?.data?.preferences?.height ?: 100,
-                maxHeight = provider.getItem(it)?.data?.preferences?.height ?: 100))
+            measure(
+                it, Constraints(
+                    minWidth = provider.getItem(it)?.data?.preferences?.width ?: 100,
+                    maxWidth = provider.getItem(it)?.data?.preferences?.width ?: 100,
+                    minHeight = provider.getItem(it)?.data?.preferences?.height ?: 100,
+                    maxHeight = provider.getItem(it)?.data?.preferences?.height ?: 100
+                )
+            )
         }
 
         layout(width = constraints.maxWidth, height = constraints.maxHeight) {
@@ -96,8 +104,10 @@ private fun Placeable.PlacementScope.placeItem(
     listItem: ItemTreeNode,
     placeables: List<Placeable>
 ) {
-    val xPosition = listItem.data.preferences.x + screenWidth / 2 - listItem.data.preferences.width/2 - state.offsetState.value.x
-    val yPosition = -listItem.data.preferences.y + screenHeight / 2- listItem.data.preferences.height/2 - state.offsetState.value.y
+    val xPosition =
+        listItem.data.preferences.x + screenWidth / 2 - listItem.data.preferences.width / 2 - state.offsetState.value.x
+    val yPosition =
+        -listItem.data.preferences.y + screenHeight / 2 - listItem.data.preferences.height / 2 - state.offsetState.value.y
 
     placeables.forEach { placeable ->
         placeable.placeRelative(

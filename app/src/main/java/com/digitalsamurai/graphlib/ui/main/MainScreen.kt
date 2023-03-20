@@ -1,5 +1,7 @@
 package com.digitalsamurai.graphlib.ui.main
 
+import android.graphics.PointF
+import android.util.Log
 import com.digitalsamurai.graphlib.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDp
@@ -21,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -108,9 +112,12 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
             LazyTreeLayout(
                 modifier = Modifier
                     .padding(0.dp, lazyTreePadding.value, 0.dp, 0.dp),
+
                 longClickEvent = LongClickEvent(500L) {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     viewModelUI.updateFullScreenState()
+                }, clickEvent = {
+                    viewModelUI.treeClick(it)
                 }
             )
             {
@@ -146,6 +153,11 @@ fun preview() {
 
 //test mock
 private val mockViewModel = object : MainViewModelUI {
+
+
+    override fun treeClick(coordinate: PointF) {
+        TODO("Not yet implemented")
+    }
 
     override val library: State<String>
         get() = mutableStateOf("Obama")

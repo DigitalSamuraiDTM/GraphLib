@@ -60,7 +60,7 @@ class NodeBuilder {
     /**
      * Какая-то нода была выбрана
      * */
-    fun setParentNode(nodeIndex: Long) = apply {
+    fun nodeClicked(nodeIndex: Long) = apply {
         this.parentNode = nodeIndex
         this.uiState!!.value =
             MainScreenState.NewNode(nodeList, nodeTitle, parentNode, nodePosition)
@@ -69,7 +69,7 @@ class NodeBuilder {
     /**
      * Точка [LazyTreeLayout] была кликнута
      * */
-    fun setNodePosition(point: Point) = apply {
+    fun coordinateClicked(point: Point) = apply {
         this.nodePosition = point
         this.uiState!!.value =
             MainScreenState.NewNode(nodeList, nodeTitle, parentNode, nodePosition)

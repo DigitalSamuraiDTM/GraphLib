@@ -1,14 +1,11 @@
 package com.digitalsamurai.graphlib.ui.custom.modifier
 
 import android.graphics.PointF
-import android.os.Vibrator
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.IntOffset
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.TreeLayoutState
 
@@ -29,7 +26,10 @@ import com.digitalsamurai.graphlib.ui.custom.tree_layout.TreeLayoutState
  * */
 fun Modifier.treeLayoutPointerInput(
     state: TreeLayoutState,
-    longClickEvent: LongClickEvent? = null
+    screenWidth: Float,
+    screenHeight: Float,
+    longClickEvent: LongClickEvent? = null,
+    clickEvent: ((PointF) -> Unit)? = null,
 ): Modifier {
 
     var point = PointF()
@@ -43,7 +43,16 @@ fun Modifier.treeLayoutPointerInput(
         forEachGesture {
             this.detectTapGestures(onLongPress = {
                 longClickEvent?.onLongClick?.invoke()
-            })
+            }, onTap = {
+                //Offset который получаем = относителен начала ТЕКУЩЕГО элемента
+                val stateX = state.offsetState.value.x
+                val stateY = state.offsetState.value.y
+                val coordinateX = it.x + stateX - screenWidth / 2
+                val coordinateY = -(it.y + stateY - screenHeight / 2)
+                clickEvent?.invoke(PointF(coordinateX, coordinateY))
+            }
+            )
+
         }
     }
 }

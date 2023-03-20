@@ -1,7 +1,9 @@
 package com.digitalsamurai.graphlib.ui.main.vm
 
+import android.graphics.PointF
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.graphics.toPoint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalsamurai.graphlib.GraphLibApp
@@ -109,9 +111,16 @@ class MainViewModel : ViewModel(), MainViewModelUI {
 
 
     override fun clickNavigationBottomButton() {
+        //todo now need navigate to
+    }
 
+    override fun treeClick(coordinate: PointF) {
+        if (state.value is MainScreenState.NewNode){
+            nodeBuilder?.coordinateClicked(coordinate.toPoint())
+            return
+        }
 
-
+        //TODO calculate)
     }
 
     override fun updateFullScreenState(isFullScreen: Boolean?) {
@@ -133,7 +142,9 @@ class MainViewModel : ViewModel(), MainViewModelUI {
      * */
 
     override fun clickEvent(nodeIndex: Long) {
-        TODO("Not yet implemented")
+        if (state.value is MainScreenState.NewNode){
+            nodeBuilder?.nodeClicked(nodeIndex)
+        }
     }
 
 
