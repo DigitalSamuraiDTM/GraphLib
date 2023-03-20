@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.digitalsamurai.graphlib.database.room.libs.Lib
 import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 
 @Entity(tableName = NodePosition.TABLE_NAME,
@@ -12,7 +11,7 @@ import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
             ForeignKey(
             onDelete = ForeignKey.CASCADE,
             entity = LibNode::class,
-            parentColumns = [LibNode.COLUMN_NODE_PRIMARY_INDEX],
+            parentColumns = [LibNode.COLUMN_NODE_INDEX],
             childColumns = [NodePosition.COLUMN_NODE_INDEX])],
 )
 data class NodePosition (

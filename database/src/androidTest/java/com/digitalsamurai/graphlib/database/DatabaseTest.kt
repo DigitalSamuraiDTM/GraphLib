@@ -138,7 +138,7 @@ class DatabaseTest {
     }
 
     /**
-     * При удалении записи [LibNode] при стратегии [NodeDeleteStrategy.CONNECT_CHILDREN_TO_PARENT] дочки из колонки [LibNode.COLUMN_NODE_CHILDS] должны привязаться к родителю [LibNode.COLUMN_PARENT_NODE_INDEX]
+     * При удалении записи [LibNode] при стратегии [NodeDeleteStrategy.CONNECT_CHILDREN_TO_PARENT] дочки из колонки [LibNode.COLUMN_CHILDS] должны привязаться к родителю [LibNode.COLUMN_PARENT_INDEX]
      * */
     @Test
     fun testChildConstraints() = runBlocking {

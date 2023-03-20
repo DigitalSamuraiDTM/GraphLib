@@ -11,7 +11,7 @@ import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
             onDelete = CASCADE,
             onUpdate = CASCADE,
             entity = LibNode::class,
-            parentColumns = [LibNode.COLUMN_NODE_PRIMARY_INDEX],
+            parentColumns = [LibNode.COLUMN_NODE_INDEX],
             childColumns = [ViewNodeData.COLUMN_PARENT_INDEX])])
 data class ViewNodeData(
 

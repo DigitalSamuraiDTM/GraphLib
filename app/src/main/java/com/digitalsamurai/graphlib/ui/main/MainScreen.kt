@@ -1,13 +1,16 @@
 package com.digitalsamurai.graphlib.ui.main
 
+import com.digitalsamurai.graphlib.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
@@ -19,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -120,8 +124,8 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(10.dp, 0.dp, 10.dp, 10.dp)
+                    .height(60.dp)
+
             ) {
                 viewModelUI.state.value.View(viewModelUI = viewModelUI)
             }
@@ -156,8 +160,10 @@ private val mockViewModel = object : MainViewModelUI {
     private val _i = mutableStateOf(false)
     override val isFullScreen: State<Boolean>
         get() = _i
+
+    private val _state = mutableStateOf<MainScreenState>(MainScreenState.Main(emptyList()))
     override val state: State<MainScreenState>
-        get() = TODO("Not yet implemented")
+        get() = _state
 
     override fun updateFullScreenState(isFullScreen: Boolean?) {
         isFullScreen?.let {
