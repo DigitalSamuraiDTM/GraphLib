@@ -45,12 +45,12 @@ class TreeManagerTest {
 
 
         val rootIndex = libNodeDao.insert(LibNode(libName,"Main",null, ChildNodes(),0))
-        val test1Index = libNodeDao.insert(LibNode(libName,"Test1",rootIndex,ChildNodes(),0))
-        val test2Index = libNodeDao.insert(LibNode(libName,"Test2",rootIndex,ChildNodes(),0))
-        val test11Index = libNodeDao.insert(LibNode(libName,"Test11",test1Index,ChildNodes(),0))
-        val test21Index = libNodeDao.insert(LibNode(libName,"Test21",test2Index,ChildNodes(),0))
-        val test12Index = libNodeDao.insert(LibNode(libName,"Test12",test1Index,ChildNodes(),0))
-        val test111Index = libNodeDao.insert(LibNode(libName,"Test12",test11Index,ChildNodes(),0))
+        val test1Index = libNodeDao.insert(LibNode(libName,"Test1",rootIndex.nodeIndex,ChildNodes(),0))
+        val test2Index = libNodeDao.insert(LibNode(libName,"Test2",rootIndex.nodeIndex,ChildNodes(),0))
+        val test11Index = libNodeDao.insert(LibNode(libName,"Test11",test1Index.nodeIndex,ChildNodes(),0))
+        val test21Index = libNodeDao.insert(LibNode(libName,"Test21",test2Index.nodeIndex,ChildNodes(),0))
+        val test12Index = libNodeDao.insert(LibNode(libName,"Test12",test1Index.nodeIndex,ChildNodes(),0))
+        val test111Index = libNodeDao.insert(LibNode(libName,"Test12",test11Index.nodeIndex,ChildNodes(),0))
 
 
         //test init
@@ -64,7 +64,7 @@ class TreeManagerTest {
         showAllTreeInConsole(root!!)
 
         //test checking
-        var foundedChild = treeManager.findNodeByIndex(test111Index)
+        var foundedChild = treeManager.findNodeByIndex(test111Index.nodeIndex)
         println(foundedChild?.nodeInfo?.title)
         assert(foundedChild!=null)
 

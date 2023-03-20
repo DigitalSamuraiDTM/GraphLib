@@ -22,4 +22,6 @@ interface NodeViewPropertyDao {
     @Query("SELECT * FROM ${NodeViewProperty.TABLE_NAME} WHERE ${NodeViewProperty.COLUMN_NODE_INDEX}=:nodeIndex")
     suspend fun getByIndex(nodeIndex : Long) : NodeViewProperty?
 
+    @Query("SELECT * FROM ${NodeViewProperty.TABLE_NAME}")
+    suspend fun getAll() : List<NodeViewProperty>
 }
