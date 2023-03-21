@@ -18,7 +18,7 @@ data class NodeViewProperty (
 
         @PrimaryKey
         @ColumnInfo(name = COLUMN_NODE_INDEX)
-        val nodeIndex : Long,
+        var nodeIndex : Long,
 
         @ColumnInfo(name = COLUMN_WIDTH)
         val width : Int = DEFAULT_WIDTH,
@@ -33,7 +33,7 @@ data class NodeViewProperty (
                 const val COLUMN_WIDTH = "node_width"
                 const val COLUMN_HEIGHT = "node_height"
 
-                const val DEFAULT_WIDTH = 100
-                const val DEFAULT_HEIGHT = 100
+                const val DEFAULT_WIDTH = 200
+                const val DEFAULT_HEIGHT = 200
         }
 }

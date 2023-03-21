@@ -1,10 +1,18 @@
 package com.digitalsamurai.graphlib.logic.createnode
 
 import android.graphics.Point
-import android.graphics.PointF
 import androidx.compose.runtime.MutableState
+import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
+import com.digitalsamurai.graphlib.database.room.nodes.position.NodePosition
+import com.digitalsamurai.graphlib.database.room.nodes.properties.NodeViewProperty
+import com.digitalsamurai.graphlib.database.tree.TreeManager
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.main.MainScreenState
+import com.digitalsamurai.graphlib.ui.main.vm.ReturnController
+import com.digitalsamurai.graphlib.ui.navigation.Screen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 
 /**
  * [NodeBuilder] делегирует на себя задачи создания новой записи (БЕЗ учёта начинки)
@@ -12,34 +20,50 @@ import com.digitalsamurai.graphlib.ui.main.MainScreenState
  * Во время создания записи интерфейс имеет состояние [MainScreenState.NewNode]
  * Можно, конечно, довести этот класс до ООП паттерна "Цепочка обязанностей", но это слишком много кода, который, на данный момент, не даст никаких преимуществ
  * поэтому оставляю полукастомный шаблон "Конструктор" :)
+ *
+ * @param libName Нужна для создания ноды в бд
+ * @param returnController сообщает о завершении управления состояниями (возвращаем управление в ViewModel)
+ * @param viewModelScope Для создания ноды в бд
+ * @param nodeList текущий список, отображающийся на экране
+ * @param navigationChannel нужен для управления навигацией
+ * @param uiState нужен для изменения состояний экрана
+ * @param treeManager позволяет создать ноду
  * */
-class NodeBuilder {
+class NodeBuilder(
+    private val libName: String,
+    private val returnController: ReturnController,
+    private val viewModelScope: CoroutineScope,
+    private val nodeList: MutableList<ItemTreeNode.TreeNodeData>,
+    private val navigationChannel: Channel<String>,
+    private val uiState: MutableState<MainScreenState>,
+    private val treeManager: TreeManager
+) {
+
+    //TODO изменение дефолтного размера и цвета узла
+
+    private var nodePosition: Point? = null
+
+    private var parentNode: Long? = null
+
+    private var nodeTitle: String? = null
 
 
-    var uiState: MutableState<MainScreenState.NewNode>? = null
-
-    private var nodePosition: Point = Point(0, 0)
-
-    private var parentNode: Long = -1
-
-    private var nodeTitle: String = "Example of title"
-
-    private var nodeList: List<ItemTreeNode.TreeNodeData> = emptyList()
-
-    /**
-     * Начинаем создание новой ноды
-     * @param uiState - передаём управление состояниями в NodeConstructor
-     * @param nodeList - текущее состояние узлов на экране. Также необходимо для понимания того создаём мы Root ноду или нет
-     * Он будет управлять состоянием ui до завершения создания Ноды
-     * */
-    fun startConstructor(
-        nodeList: List<ItemTreeNode.TreeNodeData>,
-        uiState: MutableState<MainScreenState.NewNode>
-    ) = apply {
-        this.uiState = uiState
-        this.nodeList = nodeList
-        this.uiState!!.value =
-            MainScreenState.NewNode(nodeList, nodeTitle, parentNode, nodePosition)
+    init {
+        //показываем кнопку с предложением создать ноду
+        if (nodeList.isNotEmpty()) {
+            //сразу навигация в создание заголовка
+            navigationChannel.trySend(
+                Screen.CreateNode.navigationWithArgs(Unit)
+            )
+        }
+        this.uiState.value =
+            MainScreenState.NewNode(
+                nodeList,
+                nodeList.isEmpty(),
+                nodeTitle,
+                parentNode,
+                nodePosition
+            )
     }
 
 
@@ -53,8 +77,8 @@ class NodeBuilder {
         } else {
             null
         }
-        this.uiState!!.value =
-            MainScreenState.NewNode(nodeList, title, isNeedParent, nodePosition)
+        this.uiState.value =
+            MainScreenState.NewNode(nodeList, nodeList.isEmpty(), title, isNeedParent, nodePosition)
     }
 
     /**
@@ -62,8 +86,14 @@ class NodeBuilder {
      * */
     fun nodeClicked(nodeIndex: Long) = apply {
         this.parentNode = nodeIndex
-        this.uiState!!.value =
-            MainScreenState.NewNode(nodeList, nodeTitle, parentNode, nodePosition)
+        this.uiState.value =
+            MainScreenState.NewNode(
+                nodeList,
+                nodeList.isEmpty(),
+                nodeTitle,
+                parentNode,
+                nodePosition
+            )
     }
 
     /**
@@ -71,8 +101,21 @@ class NodeBuilder {
      * */
     fun coordinateClicked(point: Point) = apply {
         this.nodePosition = point
-        this.uiState!!.value =
-            MainScreenState.NewNode(nodeList, nodeTitle, parentNode, nodePosition)
+        val node = ItemTreeNode.TreeNodeData(
+            nodeTitle!!, -1,
+            ItemTreeNode.TreeNodePreferences(
+                nodePosition!!.x, nodePosition!!.y, NodeViewProperty.DEFAULT_HEIGHT,
+                NodeViewProperty.DEFAULT_WIDTH
+            ), false
+        )
+
+        val data = nodeList.toMutableList()
+        data.add(node)
+        this.uiState.value =
+            MainScreenState.NewNode(data, nodeList.isEmpty(), nodeTitle, parentNode, nodePosition)
+
+
+        //Last state. Need user confirm
 
     }
 
@@ -83,9 +126,33 @@ class NodeBuilder {
 
         //TODO create in database
         return ItemTreeNode.TreeNodeData(
-            nodeTitle,
+            nodeTitle!!,
             nodeIndex = 0,
-            preferences = ItemTreeNode.TreeNodePreferences(nodePosition.x, nodePosition.y, 200, 200)
+            preferences = ItemTreeNode.TreeNodePreferences(
+                nodePosition!!.x,
+                nodePosition!!.y,
+                200,
+                200
+            )
         )
+    }
+
+    fun clickNavigationBottomButton() {
+
+        if (nodeTitle == null) {
+            navigationChannel.trySend(
+                Screen.CreateNode.navigationWithArgs(Unit)
+            )
+            return
+        }
+        //Подтверждение создания ноды. Заводим запись в бд и передаём контроль обратно ViewModel
+        viewModelScope.launch {
+            treeManager.insertNode(
+                LibNode(libName, nodeTitle!!, parentNode),
+                NodePosition(-1L, nodePosition!!.x, nodePosition!!.y),
+                NodeViewProperty(-1L)
+            )
+            returnController.returnControl()
+        }
     }
 }

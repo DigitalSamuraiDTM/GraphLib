@@ -1,6 +1,7 @@
 package com.digitalsamurai.graphlib.ui.main.vm
 
 import android.graphics.PointF
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.graphics.toPoint
@@ -20,12 +21,16 @@ import com.digitalsamurai.graphlib.ui.custom.bottom_navigator.entity.BottomNavig
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.main.MainScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @MainScope
 @HiltViewModel
-class MainViewModel : ViewModel(), MainViewModelUI {
+class MainViewModel : ViewModel(), MainViewModelUI, ReturnController {
 
 
     @Inject
@@ -39,6 +44,11 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     lateinit var treeManagerFactory: TreeManager.Factory
     lateinit var treeManager: TreeManager
 
+    //канал для навигации
+    private val _navigationChannel =
+        Channel<String>(1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val navigationChannel: ReceiveChannel<String>
+        get() = _navigationChannel
 
     var nodeBuilder: NodeBuilder? = null
 
@@ -46,6 +56,7 @@ class MainViewModel : ViewModel(), MainViewModelUI {
      * Хранит всё, что надо для отображения на [LazyTreeLayout]
      * */
     private var nodeDataList = mutableListOf<ItemTreeNode.TreeNodeData>()
+
 
     private var _library = mutableStateOf<String>("")
     override val library: State<String>
@@ -63,16 +74,25 @@ class MainViewModel : ViewModel(), MainViewModelUI {
             //инициализируем название библиотеки и асинхронно начинаем загружать дерево из бд
             viewModelScope.launch {
                 treeManager = treeManagerFactory.build(it)
-                initTree()
+
+                observeTreeChanges()
                 //инициализируем дерево из менеджера, кастуя к списку TreeNodeData для отображения на layout
-                nodeDataList = (treeManager.getRootNode()?.toLazyTreeMutableList() ?: mutableListOf())
+                nodeDataList =
+                    (treeManager.getRootNode()?.toLazyTreeMutableList() ?: mutableListOf())
 
 
-                //Переходим в состояние создание Root ноды
-                if (nodeDataList.isEmpty()){
-                    _state.value = MainScreenState.NewNode(nodeDataList,null,null,null)
+                //Переходим в состояние создание Root ноды. Передаём управление NodeBuilder
+                if (nodeDataList.isEmpty()) {
+                    nodeBuilder = NodeBuilder(
+                        library.value,
+                        this@MainViewModel as ReturnController,
+                        viewModelScope,
+                        nodeDataList,
+                        _navigationChannel,
+                        _state,
+                        treeManager
+                    )
                 }
-
             }
             //если ничего не помогло, то белый экран
         }
@@ -80,16 +100,52 @@ class MainViewModel : ViewModel(), MainViewModelUI {
         initNodeInfoListener()
     }
 
-    private fun initNodeInfoListener(){
-        nodeInfoMediatorGetter.setUpdateTitleListener(object : NodeInfoMediatorGetter.UpdateTitleListener{
+    private fun observeTreeChanges() {
+        viewModelScope.launch {
+            treeManager.flowTreeState().map { it?.toLazyTreeMutableList() ?: emptyList() }.collect {
+                nodeDataList.apply {
+                    clear()
+                    addAll(it)
+                }
+                if (_state.value is MainScreenState.Main){
+                    _state.value = MainScreenState.Main(nodeDataList,null)
+                }
+            }
+
+        }
+    }
+
+    private fun initNodeInfoListener() {
+        nodeInfoMediatorGetter.setUpdateTitleListener(object :
+            NodeInfoMediatorGetter.UpdateTitleListener {
             override fun onUpdate(title: String) {
-                _state.value = MainScreenState.NewNode(emptyList(),title,null,null)
+                nodeBuilder?.setTitle(title)
             }
         })
     }
 
+
     override fun onCleared() {
         super.onCleared()
+    }
+
+    /**
+     * ----------------------[ReturnController]---------------------
+     * */
+
+    override fun returnControl() {
+        when (_state.value) {
+            //Управление не было передано
+            is MainScreenState.Main -> {
+
+            }
+
+            //NodeBuilder возвращает состояние управление, т.к. он завершил работу
+            is MainScreenState.NewNode -> {
+                Log.d("GRAPH", "NEW NODE CONTROL RETURN")
+                _state.value = MainScreenState.Main(nodeDataList, null)
+            }
+        }
     }
 
     /**
@@ -97,7 +153,7 @@ class MainViewModel : ViewModel(), MainViewModelUI {
      * */
 
 
-    private val _state = mutableStateOf<MainScreenState>(MainScreenState.Main(emptyList(),null))
+    private val _state = mutableStateOf<MainScreenState>(MainScreenState.Main(emptyList(), null))
     override val state: State<MainScreenState>
         get() = _state
 
@@ -111,11 +167,14 @@ class MainViewModel : ViewModel(), MainViewModelUI {
 
 
     override fun clickNavigationBottomButton() {
-        //todo now need navigate to
+        if (_state.value is MainScreenState.NewNode) {
+            nodeBuilder?.clickNavigationBottomButton()
+        }
     }
 
     override fun treeClick(coordinate: PointF) {
-        if (state.value is MainScreenState.NewNode){
+        //когда наше состояние - создание новой ноды, то мы передаём все события в конструктор
+        if (state.value is MainScreenState.NewNode) {
             nodeBuilder?.coordinateClicked(coordinate.toPoint())
             return
         }
@@ -132,7 +191,6 @@ class MainViewModel : ViewModel(), MainViewModelUI {
     }
 
 
-
     private fun initTree() {
 
     }
@@ -142,7 +200,7 @@ class MainViewModel : ViewModel(), MainViewModelUI {
      * */
 
     override fun clickEvent(nodeIndex: Long) {
-        if (state.value is MainScreenState.NewNode){
+        if (state.value is MainScreenState.NewNode) {
             nodeBuilder?.nodeClicked(nodeIndex)
         }
     }
@@ -152,8 +210,9 @@ class MainViewModel : ViewModel(), MainViewModelUI {
      * ----------------------[BottomNavigatorViewModel]---------------------
      * */
 
+
     override fun bottomNavigatorClicked(element: BottomNavigatorUi) {
-        TODO("Not yet implemented")
+
     }
 
 

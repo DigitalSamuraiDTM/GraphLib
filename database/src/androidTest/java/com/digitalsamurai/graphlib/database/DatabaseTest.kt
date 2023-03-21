@@ -119,7 +119,7 @@ class DatabaseTest {
         val step1 = db.libNodeDao().insert(libRoot)
         val nodeView = NodeViewProperty(step1.nodeIndex, 200, 322)
         val nodePosition = NodePosition(step1.nodeIndex, 0, 0)
-        val step2 = db.nodePosition().insertNodePosition(nodePosition)
+        val step2 = db.nodePosition().insert(nodePosition)
         val step3 = db.nodeViewProperty().insert(nodeView)
 
 

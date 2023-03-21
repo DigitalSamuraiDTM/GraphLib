@@ -17,7 +17,7 @@ import com.digitalsamurai.graphlib.database.room.nodes.node.LibNode
 data class NodePosition (
         @PrimaryKey
         @ColumnInfo(name = COLUMN_NODE_INDEX)
-        val nodeIndex : Long,
+        var nodeIndex : Long,
 
         @ColumnInfo(name = COLUMN_X_POS)
         val xPosition : Int,

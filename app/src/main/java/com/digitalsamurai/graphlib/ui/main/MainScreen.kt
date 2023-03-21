@@ -1,32 +1,22 @@
 package com.digitalsamurai.graphlib.ui.main
 
 import android.graphics.PointF
-import android.util.Log
-import com.digitalsamurai.graphlib.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,12 +29,18 @@ import com.digitalsamurai.graphlib.ui.custom.modifier.LongClickEvent
 import com.digitalsamurai.graphlib.ui.custom.tree_layout.node.ItemTreeNode
 import com.digitalsamurai.graphlib.ui.main.vm.MainViewModel
 import com.digitalsamurai.graphlib.ui.main.vm.MainViewModelUI
+import kotlinx.coroutines.channels.consumeEach
 
 @Composable
 fun MainScreen(navController: NavController) {
 
     val viewModel: MainViewModel = viewModel()
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.navigationChannel.consumeEach {
+            navController.navigate(it)
+        }
+    }
 
     viewModel.library.value.let {
         Content(navController = navController, viewModel)
@@ -69,11 +65,7 @@ private fun Content(navController: NavController, viewModelUI: MainViewModelUI) 
         null
     }
 
-
-
     GraphlibTheme() {
-
-
         Box(
             modifier = Modifier
                 .fillMaxSize()

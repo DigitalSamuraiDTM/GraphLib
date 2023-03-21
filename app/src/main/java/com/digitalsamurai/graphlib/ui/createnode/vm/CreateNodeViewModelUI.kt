@@ -7,6 +7,8 @@ interface CreateNodeViewModelUI {
 
     val title : State<String>
 
+    val libName : State<String>
+
     fun insertNodeTitle(title : String)
 
     /**

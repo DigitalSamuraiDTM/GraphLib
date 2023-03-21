@@ -27,7 +27,9 @@ data class ItemTreeNode(
     data class TreeNodeData(
         val title : String,
         val nodeIndex : Long,
-        val preferences  : TreeNodePreferences
+        val preferences  : TreeNodePreferences,
+        val isEnabled : Boolean = true,
+        val isVisible : Boolean = true
     )
 }
 

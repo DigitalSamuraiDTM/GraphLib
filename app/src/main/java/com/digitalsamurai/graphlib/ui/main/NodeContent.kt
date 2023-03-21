@@ -1,5 +1,9 @@
 package com.digitalsamurai.graphlib.ui.main
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,20 +25,24 @@ import com.digitalsamurai.graphlib.ui.main.vm.NodeViewModel
 
 @Composable
 fun NodeView(data : ItemTreeNode.TreeNodeData, viewModel: NodeViewModel) {
-    Button(
-        onClick = { viewModel.clickEvent(data.nodeIndex) },
-        modifier = Modifier
-            .width(data.preferences.width.dp)
-            .height(data.preferences.height.dp)
-            .position(data.preferences.x, data.preferences.y),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
-    ) {
-        Text(
-            text = data.title,
-            textAlign = TextAlign.Center,
-            color = Color.White
-        )
+    AnimatedVisibility(visible = data.isVisible, enter = fadeIn(tween(2000)), exit = fadeOut(tween(2000))) {
 
+        Button(
+            enabled = data.isEnabled,
+            onClick = { viewModel.clickEvent(data.nodeIndex) },
+            modifier = Modifier
+                .width(data.preferences.width.dp)
+                .height(data.preferences.height.dp)
+                .position(data.preferences.x, data.preferences.y),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+        ) {
+            Text(
+                text = data.title,
+                textAlign = TextAlign.Center,
+                color = Color.White
+            )
+
+        }
     }
 
 }

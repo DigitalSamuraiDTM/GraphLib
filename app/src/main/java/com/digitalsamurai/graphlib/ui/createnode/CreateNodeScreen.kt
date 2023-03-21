@@ -31,10 +31,11 @@ import com.digitalsamurai.graphlib.ui.createnode.vm.CreateNodeViewModel
 import com.digitalsamurai.graphlib.ui.createnode.vm.CreateNodeViewModelUI
 
 @Composable
-fun CreateNodeScreen(navController: NavController, libraryName: String) {
+fun CreateNodeScreen(navController: NavController) {
 
     val viewModel: CreateNodeViewModel = viewModel()
-    Content(navController = navController, viewModel = viewModel, libraryName = libraryName)
+
+    Content(navController = navController, viewModel = viewModel, libraryName = viewModel.libName.value)
 }
 
 @Composable
@@ -120,6 +121,8 @@ private fun PreviewNodeScreen() {
             TODO("Not yet implemented")
         }
 
+        override val libName: State<String>
+            get() = TODO("Not yet implemented")
         override val title: State<String>
             get() = TODO("Not yet implemented")
 

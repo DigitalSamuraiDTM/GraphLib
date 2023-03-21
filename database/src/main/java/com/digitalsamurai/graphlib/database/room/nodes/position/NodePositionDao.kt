@@ -10,10 +10,10 @@ import androidx.room.Update
 interface NodePositionDao {
 
     @Insert
-    suspend fun insertNodePosition(nodePosition: NodePosition)
+    suspend fun insert(nodePosition: NodePosition)
 
     @Delete
-    suspend fun deleteNodePosition(nodePosition: NodePosition)
+    suspend fun delete(nodePosition: NodePosition)
 
     @Query("SELECT * FROM ${NodePosition.TABLE_NAME} WHERE ${NodePosition.COLUMN_NODE_INDEX}=:nodeIndex")
     suspend fun getNodeByIndex(nodeIndex: kotlin.Long) : NodePosition?

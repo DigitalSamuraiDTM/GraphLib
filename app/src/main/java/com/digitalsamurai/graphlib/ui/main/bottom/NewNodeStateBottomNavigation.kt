@@ -44,7 +44,7 @@ fun NewNodeStateBottomNavigation(viewModelUI: MainViewModelUI) {
         return
     }
     //отображам снэк с сообщением выбрать родителя
-    if (state.parentIndex == null) {
+    if (!state.isCreateRoot) {
         SnackbarMessage(modifier = Modifier
             .fillMaxSize(), text = "Select parent of your node", painter = painterResource(
             id = R.drawable.ic_info_outline_black
@@ -60,5 +60,15 @@ fun NewNodeStateBottomNavigation(viewModelUI: MainViewModelUI) {
         ))
         return
     }
+
+    //Иначе все данные были введены, остаётся дождаться только подтверждения о создании узла
+    Button(
+        onClick = { viewModelUI.clickNavigationBottomButton() },
+        modifier = Modifier.fillMaxSize().padding(10.dp, 0.dp, 10.dp, 10.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)
+    ) {
+        Text(text = "Confirm")
+    }
+
 
 }

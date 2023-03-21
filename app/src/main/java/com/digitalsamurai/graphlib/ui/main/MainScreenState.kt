@@ -25,6 +25,7 @@ sealed class MainScreenState(open val nodeList : List<ItemTreeNode.TreeNodeData>
      * */
     class NewNode(
         override val nodeList: List<ItemTreeNode.TreeNodeData>,
+        val isCreateRoot : Boolean,
         val title: String?,
         val parentIndex : Long?,
         var position : Point?
